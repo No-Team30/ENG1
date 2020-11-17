@@ -78,7 +78,7 @@ public class InfiltratorContainer implements EntityContainer {
             infiltrator.incrementTimeSinceLastUpdate(deltaTime);
             if (infiltrator.getTimeSinceLastUpdate() > 0.2) {
                 infiltrator.moveInfiltrator(room, systemContainer);
-                recordedActions.add(new Action(infiltrator.id, ActionType.InfiltratorMove, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
+                recordedActions.add(new Action(infiltrator.id, ActionType.Move, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
                 infiltrator.resetTimeSinceLastUpdate();
             }
         }
@@ -108,6 +108,8 @@ public class InfiltratorContainer implements EntityContainer {
             timeSinceLastSpawn = 0;
             Infiltrator newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
             currentInfiltrators.put(newInfiltrator.id, newInfiltrator);
+            recordedActions.add(new Action(newInfiltrator.id, ActionType.Move, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
+
         }
     }
 
@@ -118,13 +120,28 @@ public class InfiltratorContainer implements EntityContainer {
     public ArrayList<Action> record() {
         ArrayList<Action> actions = new ArrayList<>(recordedActions);
         recordedActions = new ArrayList<>();
-        System.out.println(actions);
         return actions;
     }
 
     @Override
     public void applyAction(Action action) {
-
+        switch (action.getActionType()) {
+            case Move:
+                applyMovementAction(action);
+                break;
+            case Spawn:
+                Infiltrator newInfiltator = new Infiltrator(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
+                currentInfiltrators.put(newInfiltator.id, newInfiltator);
+                break;
+            case Damage:
+                // TODO Hopefully not needed?
+                break;
+            case Capture:
+                // TODO Waiting for capture logic
+                break;
+            default:
+                break;
+        }
     }
 
     /**

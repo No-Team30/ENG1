@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.team30.game.Recording.Action;
+import com.team30.game.Recording.ActionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +18,25 @@ import java.util.stream.Collectors;
 public class NpcContainer implements EntityContainer {
     private static final int NPC_AMOUNT = 50;
     private final HashMap<ID, Npc> npcs;
+    private ArrayList<Action> recordedActions;
 
-    public NpcContainer(TiledMapTileLayer room) {
+    public NpcContainer() {
         npcs = new HashMap<>();
+        recordedActions = new ArrayList<Action>();
+
+    }
+
+    /**
+     * Spawns the maximum number of entities on random room tiles
+     *
+     * @param room The map layer of valid room tiles
+     */
+    public void spawnNpcs(TiledMapTileLayer room) {
         for (int index = 0; index < NPC_AMOUNT; index++) {
             Npc npc = new Npc(room);
             npcs.put(npc.id, npc);
+            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+
         }
     }
 
@@ -45,6 +59,7 @@ public class NpcContainer implements EntityContainer {
     public void calculatePosition(float deltaTime, TiledMapTileLayer room) {
         for (Npc npc : npcs.values()) {
             npc.calculateNewVelocity();
+            recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
         }
     }
 
@@ -68,12 +83,25 @@ public class NpcContainer implements EntityContainer {
 
     @Override
     public ArrayList<Action> record() {
-        return null;
+        ArrayList<Action> actions = new ArrayList<>(recordedActions);
+        recordedActions = new ArrayList<>();
+        return actions;
     }
 
     @Override
     public void applyAction(Action action) {
+        switch (action.getActionType()) {
+            case Move:
+                applyMovementAction(action);
+                break;
+            case Spawn:
+                Npc newNpc = new Npc(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
+                npcs.put(newNpc.id, newNpc);
+                break;
 
+            default:
+                break;
+        }
     }
 
     public void applyMovementAction(Action action) {

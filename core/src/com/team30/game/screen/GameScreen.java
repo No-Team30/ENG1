@@ -84,7 +84,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Create all entities
         // TODO Think of a better way of assigning
         auber = new Auber(roomTiles);
-        npcs = new NpcContainer(roomTiles);
+        npcs = new NpcContainer();
+
         systemContainer = new SystemContainer(systemsMap);
         infiltrators = new InfiltratorContainer(systemContainer);
         Gdx.input.setInputProcessor(this);
@@ -104,6 +105,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.shouldRecord = shouldRecord;
         this.isPlayback = false;
         this.recording = new RecordingContainer();
+
+        //Spawn entities
+        npcs.spawnNpcs(roomTiles);
     }
 
     /**
@@ -135,19 +139,18 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             timeSinceLastSnapshot -= SNAPSHOT_INTERVAL;
             LinkedList<Action> actions = recording.getSnapshot();
             for (Action action : actions) {
-                switch (action.getActionType()) {
-                    case AuberMove:
+                switch (action.getEntityType()) {
+                    case Auber:
                         auber.applyMovementAction(action);
                         break;
-                    case InfiltratorMove:
-                        infiltrators.applyMovementAction(action);
+                    case Infiltrator:
+                        infiltrators.applyAction(action);
                         break;
-                    case AuberCapture:
+                    case Npc:
+                        npcs.applyAction(action);
                         break;
-                    case SystemDamage:
-                        break;
-                    case NpcMove:
-                        npcs.applyMovementAction(action);
+                    case System:
+                        systemContainer.applyAction(action);
                         break;
                 }
             }
@@ -186,7 +189,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (shouldRecord & timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
             recording.newSnapshot();
             System.out.println(auber.velocity);
-            recording.addAction(new Action(auber.id, ActionType.AuberMove, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
+            recording.addAction(new Action(auber.id, ActionType.Move, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
             recording.addAllAction(infiltrators.record());
             recording.addAllAction(systemContainer.record());
             timeSinceLastSnapshot = 0;

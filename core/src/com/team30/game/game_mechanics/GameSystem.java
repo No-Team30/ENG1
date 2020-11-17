@@ -10,7 +10,7 @@ public class GameSystem extends Entity {
 
 
     public GameSystem(String name, int xPos, int yPos, int width, int height, int health) {
-        super(new ID(IDType.System), null, xPos, yPos, width, height);
+        super(new ID(EntityType.System), null, xPos, yPos, width, height);
         this.name = name;
         this.MAX_VELOCITY = 0f;
         this.VELOCITY_CHANGE = 0f;

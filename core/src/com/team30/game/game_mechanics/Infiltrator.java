@@ -13,7 +13,7 @@ public class Infiltrator extends Entity {
     /**
      * The amount of damage applied in "one" attack
      */
-    public static final int damageDealt = 50;
+    public static final int DAMAGE_DEALT = 50;
     // TODO Convert to an ID
     public String name;
     /**
@@ -33,8 +33,25 @@ public class Infiltrator extends Entity {
      * @param roomTiles The map of valid tiles
      */
     public Infiltrator(TiledMapTileLayer roomTiles, String name) {
-        super(new ID(IDType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
+        super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         this.name = name;
+        this.targetSystem = null;
+        this.timeSinceLastUpdate = 0f;
+        moves = new LinkedList<>();
+        System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+    }
+
+    /**
+     * Spawns a new NPC with the given ID, and at the given position
+     *
+     * @param id        The ID of the NPC
+     * @param xPosition The x coordinate to spawn on
+     * @param yPosition The y coordinate to spawn on
+     */
+    // TODO Check for clashing ID'S?
+    public Infiltrator(ID id, int xPosition, int yPosition) {
+        super(id, new Texture(("NPC.png")), xPosition, yPosition, 1, 1);
+        this.name = null;
         this.targetSystem = null;
         this.timeSinceLastUpdate = 0f;
         moves = new LinkedList<>();
@@ -122,8 +139,9 @@ public class Infiltrator extends Entity {
      *
      * @param room    The map of valid room tiles
      * @param systems The location of all systems
+     * @return True if it can start damaging a system
      */
-    public void moveInfiltrator(TiledMapTileLayer room, SystemContainer systems) {
+    public boolean moveInfiltrator(TiledMapTileLayer room, SystemContainer systems) {
         if (moves.isEmpty() && targetSystem == null) {
             Node node = getMove(room, systems);
             moves = node.exportPath();
@@ -131,7 +149,7 @@ public class Infiltrator extends Entity {
         this.velocity.x = 0;
         this.velocity.y = 0;
         if (targetSystem != null) {
-            systems.applyDamage(targetSystem, this.id, damageDealt);
+            systems.applyDamage(this.id, targetSystem, DAMAGE_DEALT);
             if (!systems.getActiveSystems().contains(targetSystem)) {
                 targetSystem = null;
                 //TODO look at moving the infiltrator away from just attacked system to avoid detection and make game harder
@@ -145,7 +163,7 @@ public class Infiltrator extends Entity {
                 System.out.println("At target system: " + targetSystem);
             }
         }
-
+        return false;
     }
 
     /**

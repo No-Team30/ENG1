@@ -1,12 +1,5 @@
 package com.team30.game.game_mechanics;
 
-enum IDType {
-    Auber,
-    Infiltrator,
-    System,
-    Npc,
-    Unknown,
-}
 
 /**
  * A ID class used to uniquely identify every entity
@@ -16,15 +9,15 @@ enum IDType {
 public class ID {
     static int idCount = 0;
     public final int ID;
-    public final IDType type;
+    public final EntityType type;
 
     public ID() {
         idCount += 1;
         this.ID = idCount;
-        type = IDType.Unknown;
+        type = null;
     }
 
-    public ID(IDType type) {
+    public ID(EntityType type) {
         idCount += 1;
         this.ID = idCount;
         this.type = type;

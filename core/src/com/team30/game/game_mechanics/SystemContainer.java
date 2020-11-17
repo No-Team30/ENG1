@@ -121,18 +121,18 @@ public class SystemContainer implements EntityContainer {
     /**
      * Applies the given damage to a system, if the cooldown has expired
      *
-     * @param attackerID The id of the attacker
+     * @param attackerID The id of the attacker (infiltrator)
      * @param systemID   The id of the system to damage
      * @param damage     The amount of damage to deal
      */
-    public void applyDamage(ID systemID, ID attackerID, int damage) {
+    public void applyDamage(ID attackerID, ID systemID, int damage) {
         GameSystem system = systems.get(systemID);
         if (system.getCoolDown() == 0) {
             if (system.applyDamage(damage) == 0) {
                 this.attackableSystems.remove(systemID);
                 this.activeSystems.remove(systemID);
             }
-            this.recordedActions.add(new Action(systemID, ActionType.SystemDamage, system.getXPosition(), system.getYPosition(), system.getXVelocity(), system.getYVelocity(), attackerID));
+            this.recordedActions.add(new Action(attackerID, ActionType.Damage, system.getXPosition(), system.getYPosition(), system.getXVelocity(), system.getYVelocity(), systemID));
         }
     }
 
@@ -174,6 +174,8 @@ public class SystemContainer implements EntityContainer {
 
     @Override
     public void applyAction(Action action) {
-
+        if (action.getActionType() == ActionType.Damage) {
+            applyDamage(action.getId(), action.getTarget(), Infiltrator.DAMAGE_DEALT);
+        }
     }
 }

@@ -67,13 +67,13 @@ public class Entity {
     /**
      * Creates a new entity at the given position
      *
-     * @param texture The texture of the given entity
-     * @param xPos    The x coordinate of the entity
-     * @param yPos    The y coordinate of the entity
-     * @param width   The width of the entity
-     * @param height  The height of the entity
+     * @param texture   The texture of the given entity
+     * @param xPosition The x coordinate of the entity
+     * @param yPosition The y coordinate of the entity
+     * @param width     The width of the entity
+     * @param height    The height of the entity
      */
-    public Entity(ID id, Texture texture, int xPos, int yPos, int width, int height) {
+    public Entity(ID id, Texture texture, int xPosition, int yPosition, int width, int height) {
         this.id = id;
         if (texture != null) {
             this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
@@ -81,7 +81,7 @@ public class Entity {
         this.width = width;
         this.height = height;
 
-        this.position = new Vector2(xPos, yPos);
+        this.position = new Vector2(xPosition, yPosition);
         this.velocity = new Vector2(0, 0);
     }
 
