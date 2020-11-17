@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         float height = GameContainer.SCREEN_HEIGHT;
 
         // Map setup
-        tiledMap = new TmxMapLoader().load("Map.tmx");
+        tiledMap = new TmxMapLoader().load("test_map.tmx");
         MapLayers layers = tiledMap.getLayers();
         roomTiles = (TiledMapTileLayer) layers.get("Rooms");
         systemsMap = layers.get("Systems");
@@ -105,6 +105,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.isPlayback = false;
         this.recording = new RecordingContainer();
     }
+
     /**
      * Creates a new playback instance from the given recording
      *
@@ -119,7 +120,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.timeSinceLastSnapshot = 0;
         this.shouldRecord = false;
         this.isPlayback = true;
-        this.recording=recording;
+        this.recording = recording;
     }
 
     @Override
@@ -173,9 +174,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         npcs.updateAndDraw(delta, roomTiles, batch);
         infiltrators.updateAndDraw(delta, roomTiles, systemContainer, batch);
-        if (systemContainer.updateAndGetActive(delta) <= 1) {
+        infiltrators.checkCaptured(auber);
+        if (systemContainer.updateAndGetActive(delta) <= 1 || infiltrators.hasPlayerWon()) {
             System.out.println("Game ends");
             game.pause();
+            game.setScreen(new MainMenu(game));
             //TODO game end condition
         }
         batch.end();
