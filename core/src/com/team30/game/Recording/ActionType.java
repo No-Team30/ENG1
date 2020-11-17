@@ -6,7 +6,8 @@ package com.team30.game.Recording;
 public enum ActionType {
     AuberMove,
     AuberCapture,
+    InfiltratorSpawn,
     InfiltratorMove,
-    InfiltratorDamage,
+    SystemDamage,
     NpcMove,
 }

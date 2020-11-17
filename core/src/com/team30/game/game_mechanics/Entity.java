@@ -3,16 +3,17 @@ package com.team30.game.game_mechanics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.team30.game.Recording.Action;
 
 import java.util.Random;
 
 /**
  * Handles updating position and collision detection
  */
-public class Movement {
+public class Entity {
+    public ID id;
     /**
      * The default max velocity of a entity
      */
@@ -50,7 +51,8 @@ public class Movement {
      * @param width     The width of the entity
      * @param height    The height of the entity
      */
-    public Movement(Texture texture, TiledMapTileLayer roomTiles, int width, int height) {
+    public Entity(ID id, Texture texture, TiledMapTileLayer roomTiles, int width, int height) {
+        this.id = id;
         if (texture != null) {
             this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
         }
@@ -71,7 +73,8 @@ public class Movement {
      * @param width   The width of the entity
      * @param height  The height of the entity
      */
-    public Movement(Texture texture, int xPos, int yPos, int width, int height) {
+    public Entity(ID id, Texture texture, int xPos, int yPos, int width, int height) {
+        this.id = id;
         if (texture != null) {
             this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
         }
@@ -176,5 +179,30 @@ public class Movement {
 
     public void setYPosition(float yPosition) {
         this.position.y = yPosition;
+    }
+
+    /**
+     * @return A copy of this entities position
+     */
+    public Vector2 getPosition() {
+        return this.position.cpy();
+    }
+
+    /**
+     * Updates the current position and velocity to match the action
+     *
+     * @param action The action containing the new variables
+     */
+    public void applyMovementAction(Action action) {
+        this.setXVelocity(action.getXVelocity());
+        this.setYVelocity(action.getYVelocity());
+
+        // In case the recording gets stuck
+        if (Math.abs(action.getXPosition() - this.getXPosition()) > 2) {
+            this.setXPosition(action.getXPosition());
+        }
+        if (Math.abs(action.getYPosition() - this.getYPosition()) > 2) {
+            this.setYPosition(action.getYPosition());
+        }
     }
 }

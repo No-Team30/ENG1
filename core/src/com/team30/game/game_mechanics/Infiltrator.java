@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeMap;
 
-public class Infiltrator extends Movement {
+public class Infiltrator extends Entity {
     /**
      * The amount of damage applied in "one" attack
      */
@@ -20,7 +20,7 @@ public class Infiltrator extends Movement {
      * The list of movements to take
      */
     Queue<Movements> moves;
-    private GameSystem targetSystem;
+    private ID targetSystem;
 
     /**
      * The time since the movements of the infiltrators were last updated
@@ -33,7 +33,7 @@ public class Infiltrator extends Movement {
      * @param roomTiles The map of valid tiles
      */
     public Infiltrator(TiledMapTileLayer roomTiles, String name) {
-        super(new Texture(("Infiltrator.png")), roomTiles, 1, 1);
+        super(new ID(IDType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         this.name = name;
         this.targetSystem = null;
         this.timeSinceLastUpdate = 0f;
@@ -64,9 +64,10 @@ public class Infiltrator extends Movement {
     public static Vector2 getClosestSystemVect(Vector2 position, SystemContainer systemContainer) {
         float minDistance = Float.MAX_VALUE;
         Vector2 direction = new Vector2();
-        for (GameSystem system : systemContainer.getAttackableSystems()) {
+        for (ID id : systemContainer.getAttackableSystems()) {
+            GameSystem system = (GameSystem) systemContainer.getEntity(id);
             float currentDistance = position.dst(system.position);
-            if (currentDistance < minDistance && system.getCoolDown() <= 0.0) {
+            if (currentDistance < minDistance) {
                 minDistance = currentDistance;
                 direction = system.position.cpy().sub(position);
             }
@@ -79,16 +80,17 @@ public class Infiltrator extends Movement {
      *
      * @param position        The position to start from
      * @param systemContainer The container with positions of all active systems
-     * @return GameSystem    The target system
+     *                        //TODO Find out how to properly document nullable
+     * @return ID    The ID of the target system (Could be null if no systems are found!)
      */
-    public static GameSystem getClosestSystem(Vector2 position, SystemContainer systemContainer) {
+    public static ID getClosestSystem(Vector2 position, SystemContainer systemContainer) {
         float minDistance = Float.MAX_VALUE;
-        GameSystem closestSystem = systemContainer.systems[0];
-        for (GameSystem system : systemContainer.getAttackableSystems()) {
-            float currentDistance = position.dst(system.position);
-            if (currentDistance < minDistance && system.getCoolDown() <= 0.0) {
+        ID closestSystem = null;
+        for (ID id : systemContainer.getAttackableSystems()) {
+            float currentDistance = position.dst(systemContainer.getEntityPosition(id));
+            if (currentDistance < minDistance) {
                 minDistance = currentDistance;
-                closestSystem = system;
+                closestSystem = id;
             }
         }
         return closestSystem;
@@ -129,9 +131,8 @@ public class Infiltrator extends Movement {
         this.velocity.x = 0;
         this.velocity.y = 0;
         if (targetSystem != null) {
-            targetSystem.applyDamage(damageDealt);
-            System.out.println("Infiltrator: " + this.name + " attacking: " + targetSystem.name + " with health remaining: " + targetSystem.health);
-            if (targetSystem.health <= 0) {
+            systems.applyDamage(targetSystem, this.id, damageDealt);
+            if (!systems.getActiveSystems().contains(targetSystem)) {
                 targetSystem = null;
                 //TODO look at moving the infiltrator away from just attacked system to avoid detection and make game harder
             }
@@ -141,7 +142,7 @@ public class Infiltrator extends Movement {
             // We have reached the target system
             if (moves.isEmpty()) {
                 targetSystem = getClosestSystem(position, systems);
-                System.out.println("At target system: " + targetSystem.name);
+                System.out.println("At target system: " + targetSystem);
             }
         }
 

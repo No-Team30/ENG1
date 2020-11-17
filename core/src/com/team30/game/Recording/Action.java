@@ -37,6 +37,14 @@ public class Action {
 
     }
 
+    public ID getId() {
+        return id;
+    }
+
+    public ID getTarget() {
+        return target;
+    }
+
     public ActionType getActionType() {
         return type;
     }
@@ -56,5 +64,6 @@ public class Action {
     public float getYPosition() {
         return yPosition;
     }
+
 
 }

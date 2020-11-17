@@ -5,24 +5,19 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 import java.util.Random;
 
-public class NPC extends Movement {
-    public NPC(TiledMapTileLayer room) {
-        super(new Texture(("NPC.png")), 0, 0, 1, 1);
+public class Npc extends Entity {
+    public Npc(TiledMapTileLayer room) {
+        super(new ID(IDType.Npc), new Texture(("NPC.png")), 0, 0, 1, 1);
         this.moveRandomCell(room);
     }
 
+
     /**
      * Sets the velocity for the npc in a random direction
-     * Then updates it's position
-     *
-     * @param deltaTime The time since last update
-     * @param room      The room layer for collision detection
      */
-    @Override
-    public void updatePosition(float deltaTime, TiledMapTileLayer room) {
+    public void calculateNewVelocity() {
         Random rand = new Random();
         this.velocity.x += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);
         this.velocity.y += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);
-        super.updatePosition(deltaTime, room);
     }
 }
