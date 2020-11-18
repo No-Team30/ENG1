@@ -177,10 +177,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         infiltrators.draw(batch);
         npcs.draw(batch);
-
+        infiltrators.checkCaptured(auber);
         if (systemContainer.getAmountOfActiveSystems() < 1) {
             System.out.println("Game ends");
             game.pause();
+            game.setScreen(new MainMenu(game));
             //TODO game end condition
         }
         batch.end();
