@@ -65,7 +65,7 @@ public class Infiltrator extends Entity {
         float minDistance = Float.MAX_VALUE;
         Vector2 direction = new Vector2();
         for (Integer id : systemContainer.getAttackableSystems()) {
-            GameSystem system = (GameSystem) systemContainer.getEntityByInt(id);
+            StationSystem system = (StationSystem) systemContainer.getEntityByInt(id);
             float currentDistance = position.dst(system.position);
             if (currentDistance < minDistance) {
                 minDistance = currentDistance;
@@ -114,7 +114,7 @@ public class Infiltrator extends Entity {
         this.velocity.y = 0;
         if (targetSystem != null) {
             systems.applyDamage(this.id, targetSystem, DAMAGE_DEALT);
-            if (!systems.getActiveSystems().contains(targetSystem)) {
+            if (!systems.getActiveSystems().contains(targetSystem.ID)) {
                 targetSystem = null;
                 //TODO look at moving the infiltrator away from just attacked system to avoid detection and make game harder
             }

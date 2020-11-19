@@ -149,7 +149,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                     case Npc:
                         npcs.applyAction(action);
                         break;
-                    case System:
+                    case StationSystem:
                         systemContainer.applyAction(action);
                         break;
                 }

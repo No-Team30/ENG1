@@ -9,7 +9,8 @@ import java.util.Queue;
 
 
 /**
- * Helper class for A* algorithm
+ * Helper class for A* algorithm<br>
+ * Basically checks if nearby tiles are accessible
  */
 class Node {
     private final Node parent;
@@ -94,9 +95,12 @@ class Node {
         if (move == null) {
             return new LinkedList<>();
         }
-        Queue<Movements> moves = this.parent.exportPath();
-        moves.add(this.move);
-        return moves;
+        if (parent != null) {
+            Queue<Movements> moves = this.parent.exportPath();
+            moves.add(this.move);
+            return moves;
+        }
+        return new LinkedList<>();
     }
 
     /**

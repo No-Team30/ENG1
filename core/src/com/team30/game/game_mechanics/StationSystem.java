@@ -2,15 +2,18 @@ package com.team30.game.game_mechanics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class GameSystem extends Entity {
+public class StationSystem extends Entity {
     public final String name;
     public int health;
+    /**
+     * Whether the system has been destroyed
+     */
     public boolean active;
     private float coolDown;
 
 
-    public GameSystem(String name, int xPos, int yPos, int width, int height, int health) {
-        super(new ID(EntityType.System), null, xPos, yPos, width, height);
+    public StationSystem(String name, int xPos, int yPos, int width, int height, int health) {
+        super(new ID(EntityType.StationSystem), null, xPos, yPos, width, height);
         this.name = name;
         this.MAX_VELOCITY = 0f;
         this.VELOCITY_CHANGE = 0f;

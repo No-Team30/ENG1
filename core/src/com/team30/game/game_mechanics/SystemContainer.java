@@ -19,7 +19,7 @@ public class SystemContainer implements EntityContainer {
     /**
      * All systems in the ship
      */
-    private final HashMap<Integer, GameSystem> systems;
+    private final HashMap<Integer, StationSystem> systems;
     /**
      * The ID's of all systems that are not destroyed
      */
@@ -72,7 +72,7 @@ public class SystemContainer implements EntityContainer {
             int y_pos = ((int) (float) yPosObject) / GameScreen.TILE_SIZE;
             int width = ((int) (float) widthObject) / GameScreen.TILE_SIZE;
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
-            GameSystem system = new GameSystem(object.getName(), x_pos, y_pos, width, height, 100);
+            StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, 100);
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);
@@ -135,11 +135,11 @@ public class SystemContainer implements EntityContainer {
      * @param damage     The amount of damage to deal
      */
     public void applyDamage(ID attackerID, ID systemID, int damage) {
-        GameSystem system = systems.get(systemID);
+        StationSystem system = systems.get(systemID.ID);
         if (system != null && system.getCoolDown() == 0) {
             if (system.applyDamage(damage) == 0) {
-                this.attackableSystems.remove(systemID);
-                this.activeSystems.remove(systemID);
+                this.attackableSystems.remove(systemID.ID);
+                this.activeSystems.remove(systemID.ID);
             }
             this.recordedActions.add(new Action(attackerID, ActionType.Damage, system.getXPosition(), system.getYPosition(), system.getXVelocity(), system.getYVelocity(), systemID));
         }
@@ -158,7 +158,7 @@ public class SystemContainer implements EntityContainer {
     @Override
     public void updateMovements(float deltaTime, TiledMapTileLayer room) {
         for (Integer id : activeSystems) {
-            GameSystem system = systems.get(id);
+            StationSystem system = systems.get(id);
             if (system.updateCoolDown(deltaTime)) {
                 this.attackableSystems.add(id);
             }

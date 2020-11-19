@@ -13,6 +13,9 @@ import java.util.Random;
  * Handles updating position and collision detection
  */
 public class Entity {
+    /**
+     * The unique identifier for this entity
+     */
     public ID id;
     /**
      * The default max velocity of a entity
@@ -108,12 +111,18 @@ public class Entity {
         this.position.y = y;
     }
 
+    /**
+     * Draws the entity at the current position<br>
+     * Also rotates the entity to match the direction of travel
+     *
+     * @param batch Where to render the entity too
+     */
     public void draw(Batch batch) {
         batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
     }
 
     /**
-     * Attempts to move to a new cell, if all corners are inside room tiles
+     * Attempts to move to a new cell (from the current velocity), if all corners are inside room tiles
      *
      * @param deltaTime The time since last update
      * @param room      The room layer for collision detection
@@ -155,6 +164,7 @@ public class Entity {
         velocity.scl((1 / deltaTime));
     }
 
+
     public float getTimeSinceLastUpdate() {
         return timeSinceLastUpdate;
     }
@@ -163,6 +173,9 @@ public class Entity {
         this.timeSinceLastUpdate += incrementTime;
     }
 
+    /**
+     * Sets the timeSinceLastUpdate (For velocity) to zero
+     */
     public void resetTimeSinceLastUpdate() {
         this.timeSinceLastUpdate = 0;
     }
@@ -200,22 +213,22 @@ public class Entity {
     }
 
     /**
-     * @return A copy of this entities position
+     * @return A COPY of this entities position
      */
     public Vector2 getPosition() {
         return this.position.cpy();
     }
 
     /**
-     * Updates the current position and velocity to match the action
+     * Updates the current position and velocity to match the given action
      *
-     * @param action The action containing the new variables
+     * @param action The action containing the new location
      */
     public void applyMovementAction(Action action) {
         this.setXVelocity(action.getXVelocity());
         this.setYVelocity(action.getYVelocity());
 
-        // In case the recording gets stuck
+        // In case the recording gets stuck, move to where it is supposed to be
         if (Math.abs(action.getXPosition() - this.getXPosition()) > 2) {
             this.setXPosition(action.getXPosition());
         }

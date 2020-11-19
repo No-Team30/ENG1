@@ -11,7 +11,7 @@ public class Action {
     private final ActionType actionType;
     private final ID id;
     private final ID target;
-    // Can't use vectors because it borks GSON
+    // Can't use vectors because GSON breaks
     private final float xPosition;
     private final float yPosition;
     private final float xVelocity;
