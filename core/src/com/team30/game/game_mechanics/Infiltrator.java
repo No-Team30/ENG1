@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeMap;
+
+import static com.team30.game.game_mechanics.Node.getMovement;
 
 public class Infiltrator extends Entity {
     /**
@@ -19,13 +20,9 @@ public class Infiltrator extends Entity {
     /**
      * The list of movements to take
      */
-    Queue<Movements> moves;
+    Queue<Node.Movements> moves;
     private ID targetSystem;
 
-    /**
-     * The time since the movements of the infiltrators were last updated
-     */
-    private float timeSinceLastUpdate;
 
     /**
      * Spawns a new infiltrator at a random position
@@ -36,7 +33,6 @@ public class Infiltrator extends Entity {
         super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         this.name = name;
         this.targetSystem = null;
-        this.timeSinceLastUpdate = 0f;
         moves = new LinkedList<>();
         System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
     }
@@ -50,24 +46,11 @@ public class Infiltrator extends Entity {
      */
     // TODO Check for clashing ID'S?
     public Infiltrator(ID id, int xPosition, int yPosition) {
-        super(id, new Texture(("NPC.png")), xPosition, yPosition, 1, 1);
+        super(id, new Texture(("Infiltrator.png")), xPosition, yPosition, 1, 1);
         this.name = null;
         this.targetSystem = null;
-        this.timeSinceLastUpdate = 0f;
         moves = new LinkedList<>();
         System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
-    }
-
-    public float getTimeSinceLastUpdate() {
-        return timeSinceLastUpdate;
-    }
-
-    public void incrementTimeSinceLastUpdate(float incrementTime) {
-        this.timeSinceLastUpdate += incrementTime;
-    }
-
-    public void resetTimeSinceLastUpdate() {
-        this.timeSinceLastUpdate = 0;
     }
 
 
@@ -81,8 +64,8 @@ public class Infiltrator extends Entity {
     public static Vector2 getClosestSystemVect(Vector2 position, SystemContainer systemContainer) {
         float minDistance = Float.MAX_VALUE;
         Vector2 direction = new Vector2();
-        for (ID id : systemContainer.getAttackableSystems()) {
-            GameSystem system = (GameSystem) systemContainer.getEntity(id);
+        for (Integer id : systemContainer.getAttackableSystems()) {
+            GameSystem system = (GameSystem) systemContainer.getEntityByInt(id);
             float currentDistance = position.dst(system.position);
             if (currentDistance < minDistance) {
                 minDistance = currentDistance;
@@ -102,36 +85,17 @@ public class Infiltrator extends Entity {
      */
     public static ID getClosestSystem(Vector2 position, SystemContainer systemContainer) {
         float minDistance = Float.MAX_VALUE;
-        ID closestSystem = null;
-        for (ID id : systemContainer.getAttackableSystems()) {
-            float currentDistance = position.dst(systemContainer.getEntityPosition(id));
+        Integer closestSystem = null;
+        for (Integer id : systemContainer.getAttackableSystems()) {
+            float currentDistance = position.dst(systemContainer.getEntityPosition(systemContainer.integerIdLookup(id)));
             if (currentDistance < minDistance) {
                 minDistance = currentDistance;
                 closestSystem = id;
             }
         }
-        return closestSystem;
+        return systemContainer.integerIdLookup(closestSystem);
     }
 
-    /**
-     * Converts a Movements enum to a vector
-     *
-     * @param move The enum to convert
-     * @return A Vector2 of the movement
-     */
-    public static Vector2 getMovement(Movements move) {
-        switch (move) {
-            case LEFT:
-                return new Vector2(-1, 0);
-            case RIGHT:
-                return new Vector2(1, 0);
-            case UP:
-                return new Vector2(0, 1);
-            case DOWN:
-                return new Vector2(0, -1);
-        }
-        return null;
-    }
 
     /**
      * Executes the next move, on its path
@@ -155,7 +119,7 @@ public class Infiltrator extends Entity {
                 //TODO look at moving the infiltrator away from just attacked system to avoid detection and make game harder
             }
         } else if (!moves.isEmpty()) {
-            Movements move = moves.remove();
+            Node.Movements move = moves.remove();
             this.velocity.add(getMovement(move)).scl(this.MAX_VELOCITY);
             // We have reached the target system
             if (moves.isEmpty()) {
@@ -189,7 +153,7 @@ public class Infiltrator extends Entity {
                 return currentNode;
             }
             // Add the valid children to the queue
-            for (Movements move : currentNode.getValidMoves(room)) {
+            for (Node.Movements move : currentNode.getValidMoves(room)) {
                 Vector2 position = currentNode.getPosition().cpy().add(getMovement(move));
                 if (!visited.contains(position)) {
                     int cost = currentNode.getCost() + 1;
@@ -203,79 +167,4 @@ public class Infiltrator extends Entity {
 
     }
 
-    /**
-     * Represents all possible movement directions
-     */
-    public enum Movements {
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN
-    }
 }
-
-/**
- * Helper class for A* algorithm
- */
-class Node {
-    private final Node parent;
-    private final Vector2 position;
-    private final Infiltrator.Movements move;
-    private final int cost;
-    private final float heuristic;
-
-    public Node(Node parent, Vector2 position, Infiltrator.Movements move, int cost, float heuristic) {
-        this.parent = parent;
-        this.position = position;
-        this.move = move;
-        this.cost = cost;
-        this.heuristic = heuristic;
-    }
-
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public float getHeuristic() {
-        return heuristic;
-    }
-
-    /**
-     * Checks the 4 neighbouring cells (In the given Movements Enum), to see if they are valid room tiles<br>
-     * And returns the valid ones
-     *
-     * @param room The map containing valid room tiles
-     * @return The list of valid movements
-     */
-    public ArrayList<Infiltrator.Movements> getValidMoves(TiledMapTileLayer room) {
-        ArrayList<Infiltrator.Movements> moves = new ArrayList<>();
-        for (Infiltrator.Movements movement : Infiltrator.Movements.values()) {
-            Vector2 newPosition = position.cpy().add(Infiltrator.getMovement(movement));
-            if (room.getCell((int) newPosition.x, (int) newPosition.y) != null) {
-                moves.add(movement);
-            }
-        }
-        return moves;
-    }
-
-    /**
-     * Backtracks up the tree, returning the path of movements to get to the target
-     *
-     * @return A queue of movements
-     */
-    public Queue<Infiltrator.Movements> exportPath() {
-        // At the top of the tree
-        if (move == null) {
-            return new LinkedList<>();
-        }
-        Queue<Infiltrator.Movements> moves = this.parent.exportPath();
-        moves.add(this.move);
-        return moves;
-    }
-}
-
-

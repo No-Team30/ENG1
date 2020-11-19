@@ -7,8 +7,6 @@ import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class InfiltratorContainer implements EntityContainer {
     /**
      * The infiltrators that are currently "alive" on the map
      */
-    private final HashMap<ID, Infiltrator> currentInfiltrators;
+    private final HashMap<Integer, Infiltrator> currentInfiltrators;
     private final SystemContainer systemContainer;
     /**
      * The number of infiltrators that have been spawned so far
@@ -117,10 +115,15 @@ public class InfiltratorContainer implements EntityContainer {
      * @return True if the infiltrator is inside the collision box
      */
     boolean collisionCheck(Auber auber, Infiltrator infiltrator, float range) {
-        return ((((auber.getXPosition() - (((float) auber.width) / 2) - range) < (infiltrator.getXPosition() + ((float) infiltrator.width) / 2))
+        if ((((auber.getXPosition() - (((float) auber.width) / 2) - range) < (infiltrator.getXPosition() + ((float) infiltrator.width) / 2))
                 && ((infiltrator.getXPosition() - ((float) infiltrator.width) / 2) < (auber.getXPosition() + range + ((float) auber.width) / 2)))
                 && (((auber.getYPosition() - (((float) auber.height) / 2) - range) < (infiltrator.getYPosition() + ((float) infiltrator.height) / 2)))
-                && ((infiltrator.getYPosition() - ((float) infiltrator.height) / 2) < (auber.getYPosition() + range + ((float) auber.height) / 2)));
+                && ((infiltrator.getYPosition() - ((float) infiltrator.height) / 2) < (auber.getYPosition() + range + ((float) auber.height) / 2))) {
+            System.out.println("Captured auber: " + infiltrator.id);
+            recordedActions.add(new Action(infiltrator.id, ActionType.Capture, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -130,7 +133,7 @@ public class InfiltratorContainer implements EntityContainer {
      */
     public void checkCaptured(Auber auber) {
         float range = 0.1f;
-        currentInfiltrators = currentInfiltrators.stream().filter(infiltrator -> !collisionCheck(auber, infiltrator, range)).collect(Collectors.toList());
+        currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), range));
 
     }
 
@@ -145,8 +148,8 @@ public class InfiltratorContainer implements EntityContainer {
             spawnedInfiltrators += 1;
             timeSinceLastSpawn = 0;
             Infiltrator newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
-            currentInfiltrators.put(newInfiltrator.id, newInfiltrator);
-            recordedActions.add(new Action(newInfiltrator.id, ActionType.Move, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
+            currentInfiltrators.put(newInfiltrator.id.ID, newInfiltrator);
+            recordedActions.add(new Action(newInfiltrator.id, ActionType.Spawn, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
 
         }
     }
@@ -168,13 +171,15 @@ public class InfiltratorContainer implements EntityContainer {
                 applyMovementAction(action);
                 break;
             case Spawn:
+                System.out.println("Spawning infiltrator");
                 Infiltrator newInfiltator = new Infiltrator(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
-                currentInfiltrators.put(newInfiltator.id, newInfiltator);
+                currentInfiltrators.put(newInfiltator.id.ID, newInfiltator);
                 break;
             case Damage:
                 // TODO Hopefully not needed?
                 break;
             case Capture:
+                currentInfiltrators.remove(action.getId().ID);
                 // TODO Waiting for capture logic
                 break;
             default:
@@ -195,6 +200,10 @@ public class InfiltratorContainer implements EntityContainer {
      * @param action The action containing the new variables
      */
     public void applyMovementAction(Action action) {
-        this.currentInfiltrators.get(action.getId()).applyMovementAction(action);
+        Infiltrator infiltrator =
+                this.currentInfiltrators.get(action.getId().ID);
+        if (infiltrator != null) {
+            infiltrator.applyMovementAction(action);
+        }
     }
 }

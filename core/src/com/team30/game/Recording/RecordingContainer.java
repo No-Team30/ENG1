@@ -35,11 +35,11 @@ public class RecordingContainer {
         try {
             RecordingContainer container = gson.fromJson(new FileReader(filename), RecordingContainer.class);
             this.recordings = container.recordings;
-            System.out.println(recordings);
             this.snapshotIndex = 0;
         } catch (FileNotFoundException e) {
             // TODO Proper error handling
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -59,8 +59,8 @@ public class RecordingContainer {
      */
     public LinkedList<Action> getSnapshot() {
         this.snapshotIndex += 1;
-        if (snapshotIndex < recordings.size()) {
-            return this.recordings.get(snapshotIndex);
+        if (snapshotIndex - 1 < recordings.size()) {
+            return this.recordings.get(snapshotIndex - 1);
         }
         return new LinkedList<>();
     }

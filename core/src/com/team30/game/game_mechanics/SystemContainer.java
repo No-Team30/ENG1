@@ -19,21 +19,22 @@ public class SystemContainer implements EntityContainer {
     /**
      * All systems in the ship
      */
-    private final HashMap<ID, GameSystem> systems;
+    private final HashMap<Integer, GameSystem> systems;
     /**
      * The ID's of all systems that are not destroyed
      */
-    private final Set<ID> activeSystems;
+    private final Set<Integer> activeSystems;
     /**
      * The ID'S of all systems that can be attacked
      * (Cooldown has expired)
      */
-    private final Set<ID> attackableSystems;
+    private final Set<Integer> attackableSystems;
 
     /**
      * Stores all actions taken, in the current snapshot
      */
     private ArrayList<Action> recordedActions;
+
 
     /**
      * Builds all systems from the map
@@ -72,21 +73,29 @@ public class SystemContainer implements EntityContainer {
             int width = ((int) (float) widthObject) / GameScreen.TILE_SIZE;
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
             GameSystem system = new GameSystem(object.getName(), x_pos, y_pos, width, height, 100);
-            this.systems.put(system.id, system);
-            this.activeSystems.add(system.id);
-            this.attackableSystems.add(system.id);
+            this.systems.put(system.id.ID, system);
+            this.activeSystems.add(system.id.ID);
+            this.attackableSystems.add(system.id.ID);
         }
 
     }
 
+    public ID integerIdLookup(Integer id) {
+        return systems.get(id).id;
+    }
+
     @Override
     public Entity getEntity(ID id) {
+        return systems.get(id.ID);
+    }
+
+    public Entity getEntityByInt(Integer id) {
         return systems.get(id);
     }
 
 
     public Vector2 getEntityPosition(ID id) {
-        return systems.get(id).getPosition();
+        return systems.get(id.ID).getPosition();
     }
 
     @Override
@@ -98,7 +107,7 @@ public class SystemContainer implements EntityContainer {
      * @return The ArrayList of currently active systems
      */
     // TODO? consider updating when systems are damaged
-    public Set<ID> getActiveSystems() {
+    public Set<Integer> getActiveSystems() {
         return activeSystems;
     }
 
@@ -107,7 +116,7 @@ public class SystemContainer implements EntityContainer {
      * @return The list of currently active systems that can aren't on cool down
      */
     // TODO? consider updating when systems are damaged
-    public Set<ID> getAttackableSystems() {
+    public Set<Integer> getAttackableSystems() {
         return attackableSystems;
     }
 
@@ -127,7 +136,7 @@ public class SystemContainer implements EntityContainer {
      */
     public void applyDamage(ID attackerID, ID systemID, int damage) {
         GameSystem system = systems.get(systemID);
-        if (system.getCoolDown() == 0) {
+        if (system != null && system.getCoolDown() == 0) {
             if (system.applyDamage(damage) == 0) {
                 this.attackableSystems.remove(systemID);
                 this.activeSystems.remove(systemID);
@@ -148,7 +157,7 @@ public class SystemContainer implements EntityContainer {
      */
     @Override
     public void updateMovements(float deltaTime, TiledMapTileLayer room) {
-        for (ID id : activeSystems) {
+        for (Integer id : activeSystems) {
             GameSystem system = systems.get(id);
             if (system.updateCoolDown(deltaTime)) {
                 this.attackableSystems.add(id);
@@ -168,7 +177,6 @@ public class SystemContainer implements EntityContainer {
     public ArrayList<Action> record() {
         ArrayList<Action> actions = new ArrayList<>(recordedActions);
         recordedActions = new ArrayList<>();
-        System.out.println(actions);
         return actions;
     }
 

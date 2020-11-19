@@ -3,6 +3,7 @@ package com.team30.game.game_mechanics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
+import java.util.List;
 import java.util.Random;
 
 public class Npc extends Entity {
@@ -31,9 +32,14 @@ public class Npc extends Entity {
     /**
      * Sets the velocity for the npc in a random direction
      */
-    public void calculateNewVelocity() {
-        Random rand = new Random();
+    public void calculateNewVelocity(TiledMapTileLayer room) {
+        Node node = new Node(position);
+        List<Node.Movements> possilbeMoves = node.getValidMoves(room);
+        Random random = new Random();
+        this.velocity = Node.getMovement(possilbeMoves.get(random.nextInt(possilbeMoves.size())));
+/*        Random rand = new Random();
         this.velocity.x += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);
-        this.velocity.y += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);
+        this.velocity.y += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);*/
     }
+
 }

@@ -16,13 +16,15 @@ import java.util.stream.Collectors;
  * Handles all concurrent npcs, and rendering of them
  */
 public class NpcContainer implements EntityContainer {
-    private static final int NPC_AMOUNT = 50;
-    private final HashMap<ID, Npc> npcs;
+    private static final int NPC_AMOUNT = 5;
+    private final HashMap<Integer, Npc> npcs;
     private ArrayList<Action> recordedActions;
+    private final float timeSinceMove;
 
     public NpcContainer() {
         npcs = new HashMap<>();
         recordedActions = new ArrayList<Action>();
+        timeSinceMove = 0f;
 
     }
 
@@ -34,7 +36,7 @@ public class NpcContainer implements EntityContainer {
     public void spawnNpcs(TiledMapTileLayer room) {
         for (int index = 0; index < NPC_AMOUNT; index++) {
             Npc npc = new Npc(room);
-            npcs.put(npc.id, npc);
+            npcs.put(npc.id.ID, npc);
             recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
 
         }
@@ -55,11 +57,23 @@ public class NpcContainer implements EntityContainer {
         return npcs.values().stream().map(e -> (Entity) e).collect(Collectors.toList());
     }
 
+    /**
+     * For pure random direction
+     * //TODO Can probably remove
+     *
+     * @param deltaTime
+     * @param room
+     */
     @Override
     public void calculatePosition(float deltaTime, TiledMapTileLayer room) {
         for (Npc npc : npcs.values()) {
-            npc.calculateNewVelocity();
-            recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+            npc.incrementTimeSinceLastUpdate(deltaTime);
+            if (npc.getTimeSinceLastUpdate() > 0.1) {
+                npc.calculateNewVelocity(room);
+                recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+
+                npc.resetTimeSinceLastUpdate();
+            }
         }
     }
 
@@ -96,7 +110,7 @@ public class NpcContainer implements EntityContainer {
                 break;
             case Spawn:
                 Npc newNpc = new Npc(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
-                npcs.put(newNpc.id, newNpc);
+                npcs.put(action.getId().ID, newNpc);
                 break;
 
             default:
@@ -105,6 +119,12 @@ public class NpcContainer implements EntityContainer {
     }
 
     public void applyMovementAction(Action action) {
-        this.npcs.get(action.getId()).applyMovementAction(action);
+        Npc npc =
+                this.npcs.get(action.getId().ID);
+        if (npc != null) {
+            npc.applyMovementAction(action);
+        } else {
+            System.out.println("Don't exist:" + action.getId());
+        }
     }
 }

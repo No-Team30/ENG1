@@ -7,8 +7,8 @@ package com.team30.game.game_mechanics;
 // TODO Needs work
 // TODO Needs a pretty print
 public class ID {
-    static int idCount = 0;
     public final int ID;
+    private static int idCount = 1;
     public final EntityType type;
 
     public ID() {

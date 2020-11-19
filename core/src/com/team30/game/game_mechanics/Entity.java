@@ -39,6 +39,10 @@ public class Entity {
      */
     public int height;
     /**
+     * The time since the movements of the infiltrators were last updated
+     */
+    private float timeSinceLastUpdate;
+    /**
      * The texture used to render the entity
      */
     private TextureRegion region;
@@ -61,6 +65,7 @@ public class Entity {
 
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0, 0);
+        this.timeSinceLastUpdate = 0f;
         this.moveRandomCell(roomTiles);
     }
 
@@ -83,6 +88,7 @@ public class Entity {
 
         this.position = new Vector2(xPosition, yPosition);
         this.velocity = new Vector2(0, 0);
+        this.timeSinceLastUpdate = 0f;
     }
 
     /**
@@ -147,6 +153,18 @@ public class Entity {
         }
         position.add(velocity);
         velocity.scl((1 / deltaTime));
+    }
+
+    public float getTimeSinceLastUpdate() {
+        return timeSinceLastUpdate;
+    }
+
+    public void incrementTimeSinceLastUpdate(float incrementTime) {
+        this.timeSinceLastUpdate += incrementTime;
+    }
+
+    public void resetTimeSinceLastUpdate() {
+        this.timeSinceLastUpdate = 0;
     }
 
     public float getXPosition() {
