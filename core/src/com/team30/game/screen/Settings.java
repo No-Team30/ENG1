@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.team30.game.GameContainer;
 
+
+// TODO We can probably get rid of this
 public class Settings extends ScreenAdapter {
     private final GameContainer game;
     private final Stage stage;
