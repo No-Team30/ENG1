@@ -4,8 +4,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Auber extends Movement {
+    private int health;
+
     public Auber(TiledMapTileLayer roomTiles) {
         super(new Texture("Auber.png"), roomTiles, 1, 1);
         this.VELOCITY_CHANGE = 2f;
+        this.health = 100;
+    }
+
+    /**
+     * 
+     */
+    private void heal() {
+
     }
 }
