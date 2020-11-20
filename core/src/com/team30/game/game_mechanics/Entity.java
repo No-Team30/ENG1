@@ -2,9 +2,11 @@ package com.team30.game.game_mechanics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.me.move.SpecialAbilities;
 import com.team30.game.Recording.Action;
 
 import java.util.Random;
@@ -49,7 +51,7 @@ public class Entity {
      * The texture used to render the entity
      */
     private TextureRegion region;
-
+	
     /**
      * Creates a new entity at a random position
      *
@@ -71,7 +73,7 @@ public class Entity {
         this.timeSinceLastUpdate = 0f;
         this.moveRandomCell(roomTiles);
     }
-
+    
     /**
      * Creates a new entity at the given position
      *
@@ -120,7 +122,12 @@ public class Entity {
     public void draw(Batch batch) {
         batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
     }
-
+    
+    public void drawInvisible(Batch batch) {
+    	SpecialAbilities invisible=new SpecialAbilities();
+        batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
+        invisible.draw(batch);
+    }
     /**
      * Attempts to move to a new cell (from the current velocity), if all corners are inside room tiles
      *
