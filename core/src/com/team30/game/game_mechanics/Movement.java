@@ -104,6 +104,13 @@ public class Movement {
     }
 
     /**
+     * Draws the invisible infiltrator
+     */
+    public void drawInvisible(Batch batch, SpecialAbilities invisible) {
+        batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
+        invisible.draw(batch);
+    }
+    /**
      * Attempts to move to a new cell, if all corners are inside room tiles
      *
      * @param deltaTime The time since last update
