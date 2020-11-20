@@ -8,6 +8,7 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.resizable = false;
+		// TODO Maybe make fullscreen somehow?
 		new LwjglApplication(new GameContainer(), config);
 	}
 }

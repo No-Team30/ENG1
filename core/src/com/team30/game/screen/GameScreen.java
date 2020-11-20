@@ -17,7 +17,10 @@ import com.team30.game.GameContainer;
 import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
 import com.team30.game.Recording.RecordingContainer;
-import com.team30.game.game_mechanics.*;
+import com.team30.game.game_mechanics.Auber;
+import com.team30.game.game_mechanics.InfiltratorContainer;
+import com.team30.game.game_mechanics.NpcContainer;
+import com.team30.game.game_mechanics.SystemContainer;
 
 import java.util.LinkedList;
 
@@ -49,7 +52,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     OrthogonalTiledMapRenderer tiledMapRenderer;
     TiledMap tiledMap;
     GameContainer game;
-    NPCContainer npcs;
+    NpcContainer npcs;
 
     float timeSinceLastSnapshot;
     RecordingContainer recording;
@@ -65,6 +68,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         // Map setup
         tiledMap = new TmxMapLoader().load("Map.tmx");
+        //tiledMap = new TmxMapLoader().load("test_map.tmx");
         MapLayers layers = tiledMap.getLayers();
         roomTiles = (TiledMapTileLayer) layers.get("Rooms");
         systemsMap = layers.get("Systems");
@@ -77,16 +81,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         camera.setToOrtho(false, (width / height) * VIEW_DISTANCE, VIEW_DISTANCE);
         camera.update();
 
-        // Create and move Auber to centre room
+        // Create all entities
         // TODO Think of a better way of assigning
         auber = new Auber(roomTiles);
-        //System.out.println("Made Auber");
-        npcs = new NPCContainer(roomTiles);
-        //System.out.println("Made NPCs");
-        infiltrators = new InfiltratorContainer();
-        //System.out.println("Made Infiltrators");
+        npcs = new NpcContainer();
+
         systemContainer = new SystemContainer(systemsMap);
-        //System.out.println("Made Systems");
+        infiltrators = new InfiltratorContainer(systemContainer);
         Gdx.input.setInputProcessor(this);
     }
 
@@ -104,7 +105,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.shouldRecord = shouldRecord;
         this.isPlayback = false;
         this.recording = new RecordingContainer();
+
+        //Spawn entities
+        npcs.spawnNpcs(roomTiles);
     }
+
     /**
      * Creates a new playback instance from the given recording
      *
@@ -119,7 +124,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         this.timeSinceLastSnapshot = 0;
         this.shouldRecord = false;
         this.isPlayback = true;
-        this.recording=recording;
+        this.recording = recording;
     }
 
     @Override
@@ -134,32 +139,34 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             timeSinceLastSnapshot -= SNAPSHOT_INTERVAL;
             LinkedList<Action> actions = recording.getSnapshot();
             for (Action action : actions) {
-                switch (action.getActionType()) {
-                    case AuberMove:
-                        auber.setXVelocity(action.getXVelocity());
-                        auber.setYVelocity(action.getYVelocity());
-
-                        // In case the recording gets stuck
-                        if (Math.abs(action.getXPosition() - auber.getXPosition()) > 2) {
-                            auber.setXPosition(action.getXPosition());
-                        }
-                        if (Math.abs(action.getYPosition() - auber.getYPosition()) > 2) {
-                            auber.setYPosition(action.getYPosition());
-                        }
+                switch (action.getEntityType()) {
+                    case Auber:
+                        auber.applyMovementAction(action);
                         break;
-                    case AuberCapture:
+                    case Infiltrator:
+                        infiltrators.applyAction(action);
                         break;
-                    case InfiltratorMove:
+                    case Npc:
+                        npcs.applyAction(action);
                         break;
-                    case InfiltratorDamage:
-                        break;
-                    case NpcMove:
+                    case StationSystem:
+                        systemContainer.applyAction(action);
                         break;
                 }
             }
         }
 
+        // Move entities if not in playback mode
+        if (!isPlayback) {
+            infiltrators.calculatePosition(delta, roomTiles);
+            npcs.calculatePosition(delta, roomTiles);
+        }
         auber.updatePosition(delta, roomTiles);
+        infiltrators.updateMovements(delta, roomTiles);
+        npcs.updateMovements(delta, roomTiles);
+        systemContainer.updateMovements(delta, roomTiles);
+
+        infiltrators.checkCaptured(auber);
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
         camera.position.y = auber.getYPosition();
@@ -171,11 +178,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         Batch batch = tiledMapRenderer.getBatch();
         batch.begin();
         auber.draw(batch);
-        npcs.updateAndDraw(delta, roomTiles, batch);
-        infiltrators.updateAndDraw(delta, roomTiles, systemContainer, batch);
-        if (systemContainer.updateAndGetActive(delta) <= 1) {
+        infiltrators.draw(batch);
+        npcs.draw(batch);
+        if (systemContainer.getAmountOfActiveSystems() < 1) {
             System.out.println("Game ends");
             game.pause();
+            game.setScreen(new MainMenu(game));
             //TODO game end condition
         }
         batch.end();
@@ -183,8 +191,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Records any movements made
         if (shouldRecord & timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
             recording.newSnapshot();
-            System.out.println(auber.velocity);
-            recording.addAction(new Action(new ID(), ActionType.AuberMove, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
+            recording.addAction(new Action(auber.id, ActionType.Move, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
+            recording.addAllAction(npcs.record());
+            recording.addAllAction(infiltrators.record());
+            recording.addAllAction(systemContainer.record());
             timeSinceLastSnapshot = 0;
         }
     }
