@@ -17,6 +17,14 @@ public class Infiltrator extends Movement {
     // TODO Convert to an ID
     public String name;
     /**
+     * The time for coolDown special ability
+     */
+    public int coolDown;
+    /**
+     * The time for Auber hallucination
+     */
+    public int hallucinationTime;
+    /**
      * The list of movements to take
      */
     Queue<Movements> moves;
@@ -37,6 +45,61 @@ public class Infiltrator extends Movement {
         this.name = name;
         this.targetSystem = null;
         this.timeSinceLastUpdate = 0f;
+        moves = new LinkedList<>();
+        System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+    }
+    /**
+     * Spawns a new infiltrator at a random position and has hallucination ability
+     *
+     * @param roomTiles The map of valid tiles
+     * @param coolDown  The time for coolDown special ability
+     * @param hallucinationTime The time for Auber hallucination
+     */
+    public Infiltrator(TiledMapTileLayer roomTiles, String name, int coolDown, int hallucinationTime) {
+        super(new Texture(("Infiltrator.png")), roomTiles, 1, 1);
+        if (coolDown > hallucinationTime){
+            this.name = name;
+            this.targetSystem = null;
+            this.coolDown = coolDown;
+            this.hallucinationTime = hallucinationTime;
+            moves = new LinkedList<>();
+            System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+        }
+        else {
+            throw new Exception("Time for coolDown should longer than hallucinationTime");
+        }
+    }
+
+    /**
+     * Spawns a new infiltrator at a random position and has faster speed
+     *
+     * @param roomTiles The map of valid tiles
+     * @param VELOCITY_CHANGE Higher velocity change for special infiltrator
+     * @param MAX_VELOCITY Higher Max velocity for special infiltrator
+     */
+    public Infiltrator(TiledMapTileLayer roomTiles, String name, float VELOCITY_CHANGE, float MAX_VELOCITY) {
+        super(new Texture(("Infiltrator.png")), roomTiles, 1, 1);
+        this.name = name;
+        this.targetSystem = null;
+        this.VELOCITY_CHANGE = VELOCITY_CHANGE;
+        this.MAX_VELOCITY = MAX_VELOCITY;
+        moves = new LinkedList<>();
+        System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+    }
+
+
+    /**
+     * Spawns a new infiltrator at a random position and has invisible ability creation
+     *
+     * @param roomTiles The map of valid tiles
+     * @param invisible To create a invisible ability
+     * @param delay The time to change invisible diagram.( It can be used as cooling down time.)
+     */
+    public Infiltrator(TiledMapTileLayer roomTiles, String name,Invisible invisible, float delay) {
+        super(new Texture(("Infiltrator.png")), roomTiles, 1, 1);
+        invisible.show(delay);
+        this.name = null;
+        this.targetSystem = null;
         moves = new LinkedList<>();
         System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
     }
