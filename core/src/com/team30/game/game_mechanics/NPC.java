@@ -6,13 +6,13 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import java.util.List;
 import java.util.Random;
 
-public class Npc extends Entity {
+public class NPC extends Entity {
     /**
      * Spawns a new NPC at a random position
      *
      * @param room The map layer of valid room tiles
      */
-    public Npc(TiledMapTileLayer room) {
+    public NPC(TiledMapTileLayer room) {
         super(new ID(EntityType.Npc), new Texture(("NPC.png")), room, 1, 1);
     }
 
@@ -24,7 +24,7 @@ public class Npc extends Entity {
      * @param yPosition The y coordinate to spawn on
      */
     // TODO Check for clashing ID'S?
-    public Npc(ID id, int xPosition, int yPosition) {
+    public NPC(ID id, int xPosition, int yPosition) {
         super(id, new Texture(("NPC.png")), xPosition, yPosition, 1, 1);
     }
 

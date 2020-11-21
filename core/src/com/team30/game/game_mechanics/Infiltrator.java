@@ -46,7 +46,7 @@ public class Infiltrator extends Entity {
     }
 
     /**
-     * Spawns a new NPC with the given ID, and at the given position
+     * Spawns a new Infiltrator with the given ID, and at the given position
      *
      * @param id        The ID of the NPC
      * @param xPosition The x coordinate to spawn on
@@ -68,7 +68,7 @@ public class Infiltrator extends Entity {
      * @param coolDown  The time for coolDown special ability
      * @param hallucinationTime The time for Auber hallucination
      */
-    public Infiltrator(TiledMapTileLayer roomTiles, String name, int coolDown, int hallucinationTime) {
+    public Infiltrator(TiledMapTileLayer roomTiles, String name, int coolDown, int hallucinationTime) throws Exception {
         super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         if (coolDown > hallucinationTime){
         	this.name = name;
@@ -108,7 +108,7 @@ public class Infiltrator extends Entity {
      * @param invisible To create a invisible ability
      * @param delay The time to change invisible diagram.( It can be used as cooling down time.)
      */
-    public Infiltrator(TiledMapTileLayer roomTiles, String name,Invisible invisible, float delay) {
+    public Infiltrator(TiledMapTileLayer roomTiles, String name, Invisible invisible, float delay) {
         super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         invisible.show(delay);
         this.name = null;
@@ -227,7 +227,6 @@ public class Infiltrator extends Entity {
 
         }
         return currentNode;
-
     }
 
 }

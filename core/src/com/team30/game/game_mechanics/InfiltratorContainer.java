@@ -134,7 +134,6 @@ public class InfiltratorContainer implements EntityContainer {
     public void checkCaptured(Auber auber) {
         float range = 0.1f;
         currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), range));
-
     }
 
 
@@ -150,7 +149,6 @@ public class InfiltratorContainer implements EntityContainer {
             Infiltrator newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
             currentInfiltrators.put(newInfiltrator.id.ID, newInfiltrator);
             recordedActions.add(new Action(newInfiltrator.id, ActionType.Spawn, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
-
         }
     }
 

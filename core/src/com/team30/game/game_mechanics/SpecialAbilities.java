@@ -34,7 +34,7 @@ public class SpecialAbilities {
 	
 	/**
 	 * invisible ability
-     * @param delay The time to change diagram.( It can be used as cooling down time.)
+     * @param delay The time to change diagram. (It can be used as cooling down time.)
      */
 	public void invisible(float delay) {
 		texture = new Texture(Gdx.files.internal("data/Infiltrator_change.png"));
@@ -50,7 +50,7 @@ public class SpecialAbilities {
      */
 	public void draw(SpriteBatch batch){
     	statetime += Gdx.graphics.getDeltaTime();
-		frame=animation.getKeyFrame(statetime,true);
+		frame = animation.getKeyFrame(statetime,true);
 		batch.begin();
 		batch.draw(frame, 100, 100);
 		batch.end();

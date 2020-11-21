@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.me.move.SpecialAbilities;
+import com.team30.game.game_mechanics.SpecialAbilities;
 import com.team30.game.Recording.Action;
 
 import java.util.Random;
@@ -124,7 +124,7 @@ public class Entity {
     }
     
     public void drawInvisible(Batch batch) {
-    	SpecialAbilities invisible=new SpecialAbilities();
+    	SpecialAbilities invisible = new SpecialAbilities();
         batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
         invisible.draw(batch);
     }
