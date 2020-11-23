@@ -31,6 +31,10 @@ public class InfiltratorContainer implements EntityContainer {
      * The time since an infiltrator was last spawned
      */
     private float timeSinceLastSpawn;
+    /**
+     * Range in which the infiltrator will be captured by the auber
+     */
+    private float captureRange = 0.1f;
 
     /**
      * Stores all actions taken, in the current snapshot
@@ -132,9 +136,7 @@ public class InfiltratorContainer implements EntityContainer {
      * @param auber - The entity to do collision checking on
      */
     public void checkCaptured(Auber auber) {
-        float range = 0.1f;
-        currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), range));
-
+        currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), captureRange));
     }
 
 

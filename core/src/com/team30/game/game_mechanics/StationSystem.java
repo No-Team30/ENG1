@@ -3,7 +3,8 @@ package com.team30.game.game_mechanics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class StationSystem extends Entity {
-    public final String name;
+    public final String type;
+    public String function;
     public int health;
     /**
      * Whether the system has been destroyed
@@ -14,7 +15,8 @@ public class StationSystem extends Entity {
 
     public StationSystem(String name, int xPos, int yPos, int width, int height, int health) {
         super(new ID(EntityType.StationSystem), null, xPos, yPos, width, height);
-        this.name = name;
+        // currently using type to find system types (healing, teleportation)
+        this.type = name;
         this.MAX_VELOCITY = 0f;
         this.VELOCITY_CHANGE = 0f;
         this.health = health;
@@ -25,6 +27,7 @@ public class StationSystem extends Entity {
     /**
      * If the system is not on cooldown, applies the given amount of damage<br>     *
      * And returns the remaining health
+     * /TODO Inform the auber which system is being damaged in someway
      *
      * @param inflicted The amount of damage to be inflicted to the system
      * @return health The remaining health of the system
@@ -34,7 +37,7 @@ public class StationSystem extends Entity {
             return this.health;
         }
         this.health = this.health - inflicted;
-        System.out.println("Inflicting: " + inflicted + " to system: " + this.name + "now at: " + this.health);
+        System.out.println("Inflicting: " + inflicted + " to system: " + this.type + "now at: " + this.health);
         //TODO create sprite to warn Auber of system damage (play sound?)
         if (this.health <= 0) {
             this.active = false;

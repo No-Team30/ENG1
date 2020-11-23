@@ -72,7 +72,9 @@ public class SystemContainer implements EntityContainer {
             int y_pos = ((int) (float) yPosObject) / GameScreen.TILE_SIZE;
             int width = ((int) (float) widthObject) / GameScreen.TILE_SIZE;
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
+
             StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, 100);
+            System.out.println("Added: " + system.type);
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);

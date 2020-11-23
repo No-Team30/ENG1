@@ -38,7 +38,7 @@ public class Infiltrator extends Entity {
     }
 
     /**
-     * Spawns a new NPC with the given ID, and at the given position
+     * Spawns a new Infiltrator with the given ID, and at the given position
      *
      * @param id        The ID of the NPC
      * @param xPosition The x coordinate to spawn on
@@ -166,5 +166,4 @@ public class Infiltrator extends Entity {
         return currentNode;
 
     }
-
 }

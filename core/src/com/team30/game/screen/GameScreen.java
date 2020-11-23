@@ -162,10 +162,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             npcs.calculatePosition(delta, roomTiles);
         }
         auber.updatePosition(delta, roomTiles);
+
         infiltrators.updateMovements(delta, roomTiles);
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
 
+        auber.healFromSystem(systemContainer, 1);
         infiltrators.checkCaptured(auber);
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
