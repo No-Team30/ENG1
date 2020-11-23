@@ -2,6 +2,8 @@ package com.team30.game.game_mechanics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.team30.game.game_mechanics.Infiltrators.Hallucinogenic;
+import com.team30.game.game_mechanics.Infiltrators.Infiltrator;
 
 public class Auber extends Entity {
     /**
@@ -14,19 +16,6 @@ public class Auber extends Entity {
         super(new ID(EntityType.Auber), new Texture("Auber.png"), roomTiles, 1, 1);
         this.VELOCITY_CHANGE = 2f;
         this.MAX_VELOCITY *= 1.5;
-    }
-
-    /**
-     * Check hallucinations
-     */
-    public void checkHallucinations(TiledMapTileLayer room, InfiltratorContainer infiltrators) {
-
-        //get Infiltrators around auber
-        for (Infiltrator infiltrator : infiltrators.getAllInfiltrators()) {
-            if (infiltrator instanceof HallucinationsInfiltrator && infiltrator.coolDown <= 0 && infiltrators.collisionCheck(this, infiltrator, 1)) {
-                getHallucinations(infiltrator);
-            }
-        }
     }
 
     /**
@@ -49,13 +38,26 @@ public class Auber extends Entity {
 
     /**
      * Get Hallucinations ability
-     * if Auber is nearby and cooldown is over,infiltrator will use the ability
+     * if Auber is nearby and cooldown is over, infiltrator will use the ability
      *
      * @param infiltrator To create a infiltrator get coolDownTime
      */
     public void getHallucinations(Infiltrator infiltrator) {
         hallucinationTime = 2;
         infiltrator.coolDown = infiltrator.coolDownTime;
+    }
+
+    /**
+     * Check hallucinations
+     */
+    public void checkHallucinations(TiledMapTileLayer room, InfiltratorContainer infiltrators) {
+
+        //get Infiltrators around auber
+        for (Infiltrator infiltrator : infiltrators.getAllInfiltrators()) {
+            if (infiltrator instanceof Hallucinogenic && infiltrator.coolDown <= 0 && infiltrators.collisionCheck(this, infiltrator, 1)) {
+                getHallucinations(infiltrator);
+            }
+        }
     }
 }
 

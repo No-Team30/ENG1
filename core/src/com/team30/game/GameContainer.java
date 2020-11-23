@@ -12,6 +12,7 @@ public class GameContainer extends Game {
 	// TODO Get rid of this
 	public static final float SCREEN_WIDTH = 640;
 	public static final float SCREEN_HEIGHT = 480;
+	public static final String RECORDING_FILE_NAME = "Recording.json";
 	public BitmapFont font;
 	public Skin skin;
 	public SpriteBatch batch;

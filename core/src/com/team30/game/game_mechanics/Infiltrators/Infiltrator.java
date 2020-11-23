@@ -1,8 +1,9 @@
-package com.team30.game.game_mechanics;
+package com.team30.game.game_mechanics.Infiltrators;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.team30.game.game_mechanics.*;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,8 +16,6 @@ public class Infiltrator extends Entity {
      * The amount of damage applied in "one" attack
      */
     public static final int DAMAGE_DEALT = 50;
-    // TODO Convert to an ID
-    public String name;
     public float coolDown;
     public float coolDownTime = 5;
     /**
@@ -24,7 +23,7 @@ public class Infiltrator extends Entity {
      */
     Queue<Node.Movements> moves;
     private ID targetSystem;
-
+    public InfiltratorType infiltratorType;
 
     /**
      * Spawns a new infiltrator at a random position
@@ -33,10 +32,10 @@ public class Infiltrator extends Entity {
      */
     public Infiltrator(TiledMapTileLayer roomTiles, String name) {
         super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
-        this.name = name;
         this.targetSystem = null;
+        this.infiltratorType = InfiltratorType.Normal;
         moves = new LinkedList<>();
-        System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+        System.out.println("Spawned infiltrator:" + this.id + " at: " + this.position.toString());
     }
 
     /**
@@ -46,13 +45,11 @@ public class Infiltrator extends Entity {
      * @param xPosition The x coordinate to spawn on
      * @param yPosition The y coordinate to spawn on
      */
-    // TODO Check for clashing ID'S?
-    public Infiltrator(ID id, int xPosition, int yPosition) {
+    public Infiltrator(ID id, float xPosition, float yPosition) {
         super(id, new Texture(("Infiltrator.png")), xPosition, yPosition, 1, 1);
-        this.name = null;
         this.targetSystem = null;
         moves = new LinkedList<>();
-        System.out.println("Spawned infiltrator:" + this.name + " at: " + this.position.toString());
+        System.out.println("Spawned npc:" + this.id + " at: " + this.position.toString());
     }
 
 

@@ -19,13 +19,10 @@ public class NPCContainer implements EntityContainer {
     private static final int NPC_AMOUNT = 5;
     private final HashMap<Integer, NPC> npcs;
     private ArrayList<Action> recordedActions;
-    private final float timeSinceMove;
 
     public NPCContainer() {
         npcs = new HashMap<>();
-        recordedActions = new ArrayList<Action>();
-        timeSinceMove = 0f;
-
+        recordedActions = new ArrayList<>();
     }
 
     /**
@@ -33,11 +30,11 @@ public class NPCContainer implements EntityContainer {
      *
      * @param room The map layer of valid room tiles
      */
-    public void spawnNpcs(TiledMapTileLayer room) {
+    public void spawnNPCs(TiledMapTileLayer room) {
         for (int index = 0; index < NPC_AMOUNT; index++) {
             NPC npc = new NPC(room);
             npcs.put(npc.id.ID, npc);
-            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
         }
     }
 
@@ -60,8 +57,8 @@ public class NPCContainer implements EntityContainer {
      * For pure random direction
      * //TODO Can probably remove
      *
-     * @param deltaTime
-     * @param room
+     * @param deltaTime - The time elapsed since the velocity was last updated
+     * @param room      The map layer of valid room tiles
      */
     @Override
     public void calculatePosition(float deltaTime, TiledMapTileLayer room) {
@@ -69,7 +66,7 @@ public class NPCContainer implements EntityContainer {
             npc.incrementTimeSinceLastUpdate(deltaTime);
             if (npc.getTimeSinceLastUpdate() > 0.1) {
                 npc.calculateNewVelocity(room);
-                recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+                recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
 
                 npc.resetTimeSinceLastUpdate();
             }
@@ -102,7 +99,7 @@ public class NPCContainer implements EntityContainer {
     }
 
     @Override
-    public void applyAction(Action action) {
+    public void applyAction(Action action, TiledMapTileLayer room) {
         switch (action.getActionType()) {
             case Move:
                 applyMovementAction(action);

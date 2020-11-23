@@ -12,7 +12,7 @@ import java.util.Queue;
  * Helper class for A* algorithm<br>
  * Basically checks if nearby tiles are accessible
  */
-class Node {
+public class Node {
     private final Node parent;
     private final Vector2 position;
     private final Movements move;

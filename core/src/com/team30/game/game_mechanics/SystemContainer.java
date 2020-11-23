@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
+import com.team30.game.game_mechanics.Infiltrators.Infiltrator;
 import com.team30.game.screen.GameScreen;
 
 import java.util.*;
@@ -181,7 +182,7 @@ public class SystemContainer implements EntityContainer {
     }
 
     @Override
-    public void applyAction(Action action) {
+    public void applyAction(Action action, TiledMapTileLayer room) {
         if (action.getActionType() == ActionType.Damage) {
             applyDamage(action.getId(), action.getTarget(), Infiltrator.DAMAGE_DEALT);
         }

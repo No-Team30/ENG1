@@ -1,7 +1,8 @@
-package com.team30.game.game_mechanics;
+package com.team30.game.game_mechanics.Infiltrators;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.team30.game.game_mechanics.ID;
 
 
 public class Invisible extends Infiltrator {
@@ -13,13 +14,14 @@ public class Invisible extends Infiltrator {
 
     public Invisible(TiledMapTileLayer roomTiles, String name) {
         super(roomTiles, name);
+        this.infiltratorType = InfiltratorType.Invisible;
         System.out.println("Spawning invisible infiltrator");
     }
 
-    public Invisible(ID id, int xPosition, int yPosition) {
+    public Invisible(ID id, float xPosition, float yPosition) {
         super(id, xPosition, yPosition);
+        this.infiltratorType = InfiltratorType.Invisible;
     }
-
 
     /**
      * invisible infiltrator draw

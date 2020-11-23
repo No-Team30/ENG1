@@ -81,7 +81,7 @@ public class Entity {
      * @param width     The width of the entity
      * @param height    The height of the entity
      */
-    public Entity(ID id, Texture texture, int xPosition, int yPosition, int width, int height) {
+    public Entity(ID id, Texture texture, float xPosition, float yPosition, int width, int height) {
         this.id = id;
         if (texture != null) {
             this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
