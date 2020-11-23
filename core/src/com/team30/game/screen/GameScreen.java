@@ -17,10 +17,7 @@ import com.team30.game.GameContainer;
 import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
 import com.team30.game.Recording.RecordingContainer;
-import com.team30.game.game_mechanics.Auber;
-import com.team30.game.game_mechanics.InfiltratorContainer;
-import com.team30.game.game_mechanics.NpcContainer;
-import com.team30.game.game_mechanics.SystemContainer;
+import com.team30.game.game_mechanics.*;
 
 import java.util.LinkedList;
 
@@ -161,7 +158,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             infiltrators.calculatePosition(delta, roomTiles);
             npcs.calculatePosition(delta, roomTiles);
         }
+
         auber.updatePosition(delta, roomTiles);
+        auber.checkHallucinations(roomTiles, infiltrators);
         infiltrators.updateMovements(delta, roomTiles);
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
@@ -198,7 +197,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             timeSinceLastSnapshot = 0;
         }
     }
-
 
     /**
      * Key not being pressed, so set velocity to zero

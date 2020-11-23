@@ -9,6 +9,7 @@ import com.team30.game.Recording.ActionType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Wrapper class for all infiltrators, and handles the movement and rendering of them
@@ -37,6 +38,11 @@ public class InfiltratorContainer implements EntityContainer {
      */
     private ArrayList<Action> recordedActions;
 
+    /**
+     *Random to create different kinds of infiltrator
+     */
+    private Random random = new Random();
+
     public InfiltratorContainer(SystemContainer systemContainer) {
         this.spawnedInfiltrators = 0;
         this.timeSinceLastSpawn = 0;
@@ -59,6 +65,10 @@ public class InfiltratorContainer implements EntityContainer {
     @Override
     public List<Entity> getAllEntities() {
         return null;
+    }
+
+    public Iterable<Infiltrator> getAllInfiltrators() {
+        return currentInfiltrators.values();
     }
 
     /**
@@ -127,18 +137,41 @@ public class InfiltratorContainer implements EntityContainer {
     }
 
     /**
+     * @param auber       The player character to check a boundry around
+     * @param infiltrator The infiltrator to check if it is insde the boundry box
+     * @param range       The range around the auber to check (in the x and y axis)
+     * @param actionType The type of action
+     * @return True if the auber is inside the hallucination box
+     */
+    boolean collisionCheck(Auber auber, Infiltrator infiltrator, float range, ActionType actionType) {
+        if ((((auber.getXPosition() - (((float) auber.width) / 2) - range) < (infiltrator.getXPosition() + ((float) infiltrator.width) / 2))
+                && ((infiltrator.getXPosition() - ((float) infiltrator.width) / 2) < (auber.getXPosition() + range + ((float) auber.width) / 2)))
+                && (((auber.getYPosition() - (((float) auber.height) / 2) - range) < (infiltrator.getYPosition() + ((float) infiltrator.height) / 2)))
+                && ((infiltrator.getYPosition() - ((float) infiltrator.height) / 2) < (auber.getYPosition() + range + ((float) auber.height) / 2))) {
+            System.out.println(actionType + "Auber: " + infiltrator.id);
+            recordedActions.add(new Action(infiltrator.id, actionType, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
+            return true;
+        }
+        return false;
+    }
+    /**
      * Deletes any infiltrators in range of the Auber
      *
      * @param auber - The entity to do collision checking on
      */
     public void checkCaptured(Auber auber) {
+        if (auber.hallucinationTime > 0) {
+            return;
+        }
         float range = 0.1f;
         currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), range));
     }
 
 
+
     /**
-     * Attempts to spawn a new infiltrator
+     * Attempts to spawn a random new infiltrator with four different types
+     * Invisible, Hallucinations, faster speed and normal infiltrator
      *
      * @param room The map of valid room tiles
      */
@@ -146,7 +179,25 @@ public class InfiltratorContainer implements EntityContainer {
         if (spawnedInfiltrators < MAX_INFILTRATORS) {
             spawnedInfiltrators += 1;
             timeSinceLastSpawn = 0;
-            Infiltrator newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
+            Infiltrator newInfiltrator = null;
+            int randomV = random.nextInt(100);
+            switch (randomV % 4) {
+                case 0:
+                    newInfiltrator = new Invisible(room, "inf_" + this.spawnedInfiltrators);
+                    break;
+                case 1:
+                    newInfiltrator = new HallucinationsInfiltrator(room, "inf_" + this.spawnedInfiltrators);
+                    break;
+                case 2:
+                    newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator.MAX_VELOCITY *= 2;
+                    newInfiltrator.VELOCITY_CHANGE *= 2;
+                    break;
+                default:
+                    newInfiltrator = new Infiltrator(room, "inf_" + this.spawnedInfiltrators);
+                    break;
+            }
+
             currentInfiltrators.put(newInfiltrator.id.ID, newInfiltrator);
             recordedActions.add(new Action(newInfiltrator.id, ActionType.Spawn, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
         }

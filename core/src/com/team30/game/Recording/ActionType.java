@@ -8,4 +8,5 @@ public enum ActionType {
     Move,
     Capture,
     Damage,
+    Hallucination
 }
