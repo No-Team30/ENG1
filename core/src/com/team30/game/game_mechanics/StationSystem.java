@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class StationSystem extends Entity {
     public final String type;
     public String function;
-    public int health;
+    private int health;
+    public int maxHealth;
     /**
      * Whether the system has been destroyed
      */
@@ -20,6 +21,7 @@ public class StationSystem extends Entity {
         this.MAX_VELOCITY = 0f;
         this.VELOCITY_CHANGE = 0f;
         this.health = health;
+        this.maxHealth = health;
         this.active = true;
         this.coolDown = 0.0f;
     }
@@ -73,5 +75,9 @@ public class StationSystem extends Entity {
     @Override
     public void draw(Batch batch) {
 
+    }
+
+    public int getHealth() {
+        return health;
     }
 }

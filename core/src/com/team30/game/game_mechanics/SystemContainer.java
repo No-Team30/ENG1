@@ -74,7 +74,6 @@ public class SystemContainer implements EntityContainer {
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
 
             StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, 100);
-            System.out.println("Added: " + system.type);
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);
@@ -87,7 +86,7 @@ public class SystemContainer implements EntityContainer {
     }
 
     @Override
-    public Entity getEntity(ID id) {
+    public StationSystem getEntity(ID id) {
         return systems.get(id.ID);
     }
 
