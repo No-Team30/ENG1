@@ -49,7 +49,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     OrthogonalTiledMapRenderer tiledMapRenderer;
     TiledMap tiledMap;
     GameContainer game;
-    NpcContainer npcs;
+    NPCContainer npcs;
 
     float timeSinceLastSnapshot;
     RecordingContainer recording;
@@ -81,7 +81,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Create all entities
         // TODO Think of a better way of assigning
         auber = new Auber(roomTiles);
-        npcs = new NpcContainer();
+        npcs = new NPCContainer();
 
         systemContainer = new SystemContainer(systemsMap);
         infiltrators = new InfiltratorContainer(systemContainer);

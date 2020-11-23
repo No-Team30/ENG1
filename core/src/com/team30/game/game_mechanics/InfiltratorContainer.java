@@ -137,6 +137,7 @@ public class InfiltratorContainer implements EntityContainer {
     }
 
     /**
+     * To check whether auber is near hallucination infiltrator
      * @param auber       The player character to check a boundry around
      * @param infiltrator The infiltrator to check if it is insde the boundry box
      * @param range       The range around the auber to check (in the x and y axis)
@@ -170,7 +171,7 @@ public class InfiltratorContainer implements EntityContainer {
 
 
     /**
-     * Attempts to spawn a random new infiltrator with four different types
+     * Attempts to spawn a new random infiltrator with four different types
      * Invisible, Hallucinations, faster speed and normal infiltrator
      *
      * @param room The map of valid room tiles
@@ -200,6 +201,7 @@ public class InfiltratorContainer implements EntityContainer {
 
             currentInfiltrators.put(newInfiltrator.id.ID, newInfiltrator);
             recordedActions.add(new Action(newInfiltrator.id, ActionType.Spawn, newInfiltrator.getXPosition(), newInfiltrator.getYPosition(), newInfiltrator.getXVelocity(), newInfiltrator.getYVelocity(), null));
+
         }
     }
 

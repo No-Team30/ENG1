@@ -109,8 +109,8 @@ public class NPCContainer implements EntityContainer {
                 applyMovementAction(action);
                 break;
             case Spawn:
-                NPC newNpc = new NPC(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
-                npcs.put(action.getId().ID, newNpc);
+                NPC newNPC = new NPC(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
+                npcs.put(action.getId().ID, newNPC);
                 break;
 
             default:
