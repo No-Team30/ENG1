@@ -168,7 +168,7 @@ public class Infiltrator extends Entity {
         return currentNode;
 
     }
-    
+
     /**
      * Update coolDown time
      */

@@ -17,7 +17,11 @@ import com.team30.game.GameContainer;
 import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
 import com.team30.game.Recording.RecordingContainer;
-import com.team30.game.game_mechanics.*;
+import com.team30.game.game_mechanics.Auber;
+import com.team30.game.game_mechanics.InfiltratorContainer;
+import com.team30.game.game_mechanics.NPCContainer;
+import com.team30.game.game_mechanics.NpcContainer;
+import com.team30.game.game_mechanics.SystemContainer;
 
 import java.util.LinkedList;
 
@@ -49,7 +53,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     OrthogonalTiledMapRenderer tiledMapRenderer;
     TiledMap tiledMap;
     GameContainer game;
-    NPCContainer npcs;
+    NpcContainer npcs;
 
     float timeSinceLastSnapshot;
     RecordingContainer recording;
@@ -158,7 +162,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             infiltrators.calculatePosition(delta, roomTiles);
             npcs.calculatePosition(delta, roomTiles);
         }
-
         auber.updatePosition(delta, roomTiles);
         auber.checkHallucinations(roomTiles, infiltrators);
         infiltrators.updateMovements(delta, roomTiles);

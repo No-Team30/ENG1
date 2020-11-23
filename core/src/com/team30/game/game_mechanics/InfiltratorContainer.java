@@ -9,6 +9,8 @@ import com.team30.game.Recording.ActionType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -41,6 +43,7 @@ public class InfiltratorContainer implements EntityContainer {
     /**
      *Random to create different kinds of infiltrator
      */
+    // TODO Make local
     private Random random = new Random();
 
     public InfiltratorContainer(SystemContainer systemContainer) {
@@ -51,7 +54,7 @@ public class InfiltratorContainer implements EntityContainer {
         this.systemContainer = systemContainer;
     }
 
-
+    // TODO Why aren't these implemented?
     @Override
     public Entity getEntity(ID id) {
         return null;
@@ -66,7 +69,7 @@ public class InfiltratorContainer implements EntityContainer {
     public List<Entity> getAllEntities() {
         return null;
     }
-
+    //TODO Why is this here?
     public Iterable<Infiltrator> getAllInfiltrators() {
         return currentInfiltrators.values();
     }
@@ -129,7 +132,7 @@ public class InfiltratorContainer implements EntityContainer {
                 && ((infiltrator.getXPosition() - ((float) infiltrator.width) / 2) < (auber.getXPosition() + range + ((float) auber.width) / 2)))
                 && (((auber.getYPosition() - (((float) auber.height) / 2) - range) < (infiltrator.getYPosition() + ((float) infiltrator.height) / 2)))
                 && ((infiltrator.getYPosition() - ((float) infiltrator.height) / 2) < (auber.getYPosition() + range + ((float) auber.height) / 2))) {
-            System.out.println("Captured auber: " + infiltrator.id);
+            System.out.println("Captured by auber: " + infiltrator.id);
             recordedActions.add(new Action(infiltrator.id, ActionType.Capture, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
             return true;
         }
@@ -137,37 +140,15 @@ public class InfiltratorContainer implements EntityContainer {
     }
 
     /**
-     * To check whether auber is near hallucination infiltrator
-     * @param auber       The player character to check a boundry around
-     * @param infiltrator The infiltrator to check if it is insde the boundry box
-     * @param range       The range around the auber to check (in the x and y axis)
-     * @param actionType The type of action
-     * @return True if the auber is inside the hallucination box
-     */
-    boolean collisionCheck(Auber auber, Infiltrator infiltrator, float range, ActionType actionType) {
-        if ((((auber.getXPosition() - (((float) auber.width) / 2) - range) < (infiltrator.getXPosition() + ((float) infiltrator.width) / 2))
-                && ((infiltrator.getXPosition() - ((float) infiltrator.width) / 2) < (auber.getXPosition() + range + ((float) auber.width) / 2)))
-                && (((auber.getYPosition() - (((float) auber.height) / 2) - range) < (infiltrator.getYPosition() + ((float) infiltrator.height) / 2)))
-                && ((infiltrator.getYPosition() - ((float) infiltrator.height) / 2) < (auber.getYPosition() + range + ((float) auber.height) / 2))) {
-            System.out.println(actionType + "Auber: " + infiltrator.id);
-            recordedActions.add(new Action(infiltrator.id, actionType, infiltrator.getXPosition(), infiltrator.getYPosition(), infiltrator.getXVelocity(), infiltrator.getYVelocity(), null));
-            return true;
-        }
-        return false;
-    }
-    /**
      * Deletes any infiltrators in range of the Auber
      *
      * @param auber - The entity to do collision checking on
      */
     public void checkCaptured(Auber auber) {
-        if (auber.hallucinationTime > 0) {
-            return;
-        }
         float range = 0.1f;
         currentInfiltrators.entrySet().removeIf(infiltrator -> collisionCheck(auber, infiltrator.getValue(), range));
-    }
 
+    }
 
 
     /**
@@ -223,6 +204,7 @@ public class InfiltratorContainer implements EntityContainer {
                 break;
             case Spawn:
                 System.out.println("Spawning infiltrator");
+                // TODO Need to match up with the type of infiltrator spawned
                 Infiltrator newInfiltator = new Infiltrator(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
                 currentInfiltrators.put(newInfiltator.id.ID, newInfiltator);
                 break;

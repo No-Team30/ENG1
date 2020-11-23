@@ -5,7 +5,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.team30.game.Recording.ActionType;
 
 public class Auber extends Entity {
-
     /**
      * The time for hallucination
      */
