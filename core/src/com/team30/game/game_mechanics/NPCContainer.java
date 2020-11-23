@@ -38,13 +38,12 @@ public class NPCContainer implements EntityContainer {
             NPC npc = new NPC(room);
             npcs.put(npc.id.ID, npc);
             recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
-
         }
     }
 
     @Override
     public Entity getEntity(ID id) {
-        return npcs.get(id);
+        return npcs.get(id.ID);
     }
 
     @Override

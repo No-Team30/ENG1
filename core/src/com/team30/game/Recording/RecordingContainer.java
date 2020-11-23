@@ -83,7 +83,7 @@ public class RecordingContainer {
      *
      * @param action The action to save
      */
-    public void addAllAction(List<Action> action) {
+    public void addAllActions(List<Action> action) {
         this.recordings.get(snapshotIndex).addAll(action);
     }
 

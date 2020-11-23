@@ -20,7 +20,6 @@ import com.team30.game.Recording.RecordingContainer;
 import com.team30.game.game_mechanics.Auber;
 import com.team30.game.game_mechanics.InfiltratorContainer;
 import com.team30.game.game_mechanics.NPCContainer;
-import com.team30.game.game_mechanics.NpcContainer;
 import com.team30.game.game_mechanics.SystemContainer;
 
 import java.util.LinkedList;
@@ -53,7 +52,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
     OrthogonalTiledMapRenderer tiledMapRenderer;
     TiledMap tiledMap;
     GameContainer game;
-    NpcContainer npcs;
+    NPCContainer npcs;
 
     float timeSinceLastSnapshot;
     RecordingContainer recording;
@@ -68,8 +67,8 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         float height = GameContainer.SCREEN_HEIGHT;
 
         // Map setup
-        tiledMap = new TmxMapLoader().load("Map.tmx");
-        //tiledMap = new TmxMapLoader().load("test_map.tmx");
+        //tiledMap = new TmxMapLoader().load("Map.tmx");
+        tiledMap = new TmxMapLoader().load("test_map.tmx");
         MapLayers layers = tiledMap.getLayers();
         roomTiles = (TiledMapTileLayer) layers.get("Rooms");
         systemsMap = layers.get("Systems");
@@ -83,12 +82,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         camera.update();
 
         // Create all entities
-        // TODO Think of a better way of assigning
         auber = new Auber(roomTiles);
         npcs = new NPCContainer();
-
         systemContainer = new SystemContainer(systemsMap);
         infiltrators = new InfiltratorContainer(systemContainer);
+
         Gdx.input.setInputProcessor(this);
     }
 
@@ -165,10 +163,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.updatePosition(delta, roomTiles);
         auber.checkHallucinations(roomTiles, infiltrators);
         infiltrators.updateMovements(delta, roomTiles);
+        infiltrators.checkCaptured(auber);
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
 
-        infiltrators.checkCaptured(auber);
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
         camera.position.y = auber.getYPosition();
@@ -182,7 +180,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         infiltrators.draw(batch);
         npcs.draw(batch);
-        if (systemContainer.getAmountOfActiveSystems() < 1) {
+        if (systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()) {
             System.out.println("Game ends");
             game.pause();
             game.setScreen(new MainMenu(game));
@@ -191,12 +189,12 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         batch.end();
 
         // Records any movements made
-        if (shouldRecord & timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
+        if (shouldRecord && timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
             recording.newSnapshot();
             recording.addAction(new Action(auber.id, ActionType.Move, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
-            recording.addAllAction(npcs.record());
-            recording.addAllAction(infiltrators.record());
-            recording.addAllAction(systemContainer.record());
+            recording.addAllActions(npcs.record());
+            recording.addAllActions(infiltrators.record());
+            recording.addAllActions(systemContainer.record());
             timeSinceLastSnapshot = 0;
         }
     }

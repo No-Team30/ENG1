@@ -2,7 +2,6 @@ package com.team30.game.game_mechanics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.team30.game.Recording.ActionType;
 
 public class Auber extends Entity {
     /**
@@ -24,7 +23,7 @@ public class Auber extends Entity {
 
         //get Infiltrators around auber
         for (Infiltrator infiltrator : infiltrators.getAllInfiltrators()) {
-            if (infiltrator instanceof HallucinationsInfiltrator && infiltrator.coolDown <= 0 && infiltrators.collisionCheck(this, infiltrator, 1, ActionType.Hallucination)) {
+            if (infiltrator instanceof HallucinationsInfiltrator && infiltrator.coolDown <= 0 && infiltrators.collisionCheck(this, infiltrator, 1)) {
                 getHallucinations(infiltrator);
             }
         }

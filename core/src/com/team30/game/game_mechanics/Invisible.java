@@ -1,14 +1,7 @@
 package com.team30.game.game_mechanics;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.team30.game.game_mechanics.Auber;
-import com.team30.game.game_mechanics.Infiltrator;
 
 
 public class Invisible extends Infiltrator {
@@ -20,6 +13,7 @@ public class Invisible extends Infiltrator {
 
     public Invisible(TiledMapTileLayer roomTiles, String name) {
         super(roomTiles, name);
+        System.out.println("Spawning invisible infiltrator");
     }
 
     public Invisible(ID id, int xPosition, int yPosition) {
@@ -30,19 +24,18 @@ public class Invisible extends Infiltrator {
     /**
      * invisible infiltrator draw
      */
+    @Override
     public void draw(Batch batch) {
         if (coolDown <= 0) {
             invisibleTime = 3;
             coolDown = coolDownTime;
         }
-
         if (invisibleTime > 0) {
             super.draw(batch);
-        } else {
-            return;
         }
 
     }
+
     /**
      * Update invisible time
      *
