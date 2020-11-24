@@ -3,7 +3,6 @@ package com.team30.game.game_mechanics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.team30.game.GameContainer;
 import com.team30.game.game_mechanics.Infiltrators.Hallucinogenic;
 import com.team30.game.game_mechanics.Infiltrators.Infiltrator;
 
@@ -118,7 +117,7 @@ public class Auber extends Entity {
      *
      * @param systems SystemContainer of systems on the station
      */
-    public void teleport(final GameContainer game, SystemContainer systems) {
+    public void teleport(SystemContainer systems) {
         ID closest = getClosestSystem(position, systems);
         StationSystem teleporter = systems.getEntity(closest);
         if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < teleportRange && teleportCoolDown <= 0.0) {

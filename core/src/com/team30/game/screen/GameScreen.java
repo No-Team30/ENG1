@@ -190,10 +190,9 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         npcs.draw(batch);
 
         //TODO balance heal and damage rates
-        //updates the aubers health (both damage and healing)
+        //Updates the aubers health (both damage and healing)
         auber.healFromSystem(systemContainer, 1);
-        if (auber.damageFromSystem(systemContainer, 0.5f) || systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()))
-        {
+        if (auber.damageFromSystem(systemContainer, 0.5f) || systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()) {
             System.out.println("Game ends");
             game.pause();
             game.setScreen(new MainMenu(game));

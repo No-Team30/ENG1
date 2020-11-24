@@ -1,4 +1,4 @@
-package com.team30.game.game_mechanics;
+package com.team30.game.game_mechanics.Infiltrators;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
