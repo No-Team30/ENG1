@@ -77,8 +77,8 @@ public class SystemContainer implements EntityContainer {
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);
+            //System.out.println(object.getName());
         }
-
     }
 
     public ID integerIdLookup(Integer id) {

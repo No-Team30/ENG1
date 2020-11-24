@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class StationSystem extends Entity {
     public final String type;
-    public String function;
     private int health;
     public int maxHealth;
     /**

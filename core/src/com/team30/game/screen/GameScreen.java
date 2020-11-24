@@ -169,7 +169,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
         //TODO balance heal and damage rates
         auber.healFromSystem(systemContainer, 1);
-        auber.damageFromSystem(systemContainer, 0.1f);
+        auber.damageFromSystem(systemContainer, 0.5f);
         infiltrators.checkCaptured(auber);
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
@@ -264,7 +264,6 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-
         return false;
     }
 

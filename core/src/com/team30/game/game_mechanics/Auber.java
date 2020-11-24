@@ -16,8 +16,8 @@ public class Auber extends Entity {
 	 * 	healed by the health system
 	 * 	damaged by a broken system
 	 */
-	private float healthRange = 0.5f;
-	private float damageRange = 1.0f;
+	private float healthRange = 2.0f;
+	private float damageRange = 2.0f;
 
     public Auber(TiledMapTileLayer roomTiles) {
         super(new ID(EntityType.Auber), new Texture("Auber.png"), roomTiles, 1, 1);
@@ -36,10 +36,10 @@ public class Auber extends Entity {
 	/**
 	 * Returns the closest system that is active
 	 *
-	 * @param position        The position to start from
-	 * @param systems The container with positions of all active systems
+	 * @param position		The position to start from
+	 * @param systems 		The container with positions of all active systems
 	 *                        //TODO Find out how to properly document nullable
-	 * @return ID    The ID of the target system (Could be null if no systems are found!)
+	 * @return ID 			The ID of the target system (will default to first system returned by getActiveSystems)
 	 */
 	public static ID getClosestSystem(Vector2 position, SystemContainer systems) {
 		float minDistance = Float.MAX_VALUE;
@@ -62,19 +62,12 @@ public class Auber extends Entity {
 	 */
 	public void healFromSystem(SystemContainer systems, int healRate) {
 		ID closest = getClosestSystem(position, systems);
-		System.out.println("Closest system: " + systems.getEntity(closest).function);
-		System.out.println("Distance: " + position.dst(systems.getEntityPosition(closest)) + "\n");
 		//health < maxHealth &&
-		if ( systems.getEntity(closest).function == "Healing" && position.dst(systems.getEntityPosition(closest)) <= healthRange) {
-			System.out.println("Healing auber");
+		if ( systems.getEntity(closest).type.equals("Healing") && position.dst(systems.getEntityPosition(closest)) <= healthRange) {
 			health += healRate;
 		}
-		if (health <= 0)
-		{
+		if (health <= 0) {
 			System.out.println("Auber dead");
-		}
-		if (health < 100) {
-			System.out.println("Auber at: " + health);
 		}
 	}
 
@@ -86,13 +79,9 @@ public class Auber extends Entity {
 	 */
 	public void damageFromSystem(SystemContainer systems, float damageRate) {
 		ID closest = getClosestSystem(position, systems);
-		if (health > 0 && position.dst(systems.getEntityPosition(closest)) <= damageRange) {
+		if (health > 0 && !(systems.getEntity(closest).type.equals("Healing")) && position.dst(systems.getEntityPosition(closest)) <= damageRange) {
 			//TODO Balance this heuristic
-			System.out.println("Damaging auber");
 			health -= (int) damageRate * (systems.getEntity(closest).maxHealth - systems.getEntity(closest).getHealth());
-		}
-		if (health < 100) {
-			System.out.println("Auber at: " + health);
 		}
 	}
 }
