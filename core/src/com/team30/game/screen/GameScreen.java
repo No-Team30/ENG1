@@ -167,10 +167,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
 
-        //TODO balance heal and damage rates
-        //updates the aubers health (both damage and healing)
-        auber.healFromSystem(systemContainer, 1);
-        auber.damageFromSystem(systemContainer, 0.5f);
+
 
         //check if auber is on teleporter
         auber.updateTeleportCoolDown( delta);
@@ -190,7 +187,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         infiltrators.draw(batch);
         npcs.draw(batch);
-        if (systemContainer.getAmountOfActiveSystems() < 1) {
+
+        //TODO balance heal and damage rates
+        //updates the aubers health (both damage and healing)
+        auber.healFromSystem(systemContainer, 1);
+        if (auber.damageFromSystem(systemContainer, 0.5f) || systemContainer.getAmountOfActiveSystems() < 1) {
             System.out.println("Game ends");
             game.pause();
             game.setScreen(new MainMenu(game));

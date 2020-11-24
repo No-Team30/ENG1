@@ -83,17 +83,27 @@ public class Auber extends Entity {
 	}
 
 	/**
-	 *	Damages the auber if they are close to a broken system
 	 *
-	 * @param systems		SystemContainer of systems on the station
-	 * @param damageRate	The damage rate to be inflicted
+	 * Damages the auber if they are close to a broken system
+	 * Used to end the game if the auber's health is <= 0
+	 *
+	 * @param systems
+	 * @param damageRate The damage rate to be inflicted
+	 *
+	 * @return	true if the health is below 0
 	 */
-	public void damageFromSystem(SystemContainer systems, float damageRate) {
+	public boolean damageFromSystem(SystemContainer systems, float damageRate) {
 		ID closest = getClosestSystem(position, systems);
 		StationSystem system = systems.getEntity(closest);
 		if (health > 0 && !(system.type.equals("Healing")) && position.dst(system.position) <= damageRange) {
 			//TODO Balance this heuristic
 			health -= (int) damageRate * (systems.getEntity(closest).maxHealth - systems.getEntity(closest).getHealth());
+		}
+		if (health <= 0) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 
@@ -122,7 +132,7 @@ public class Auber extends Entity {
 		Stage stage = new Stage();
 		if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < 1.0f && teleportCoolDown <= 0.0) {
 			Table table = new Table();
-			stage.addActor(table);
+			//stage.addActor(table);
 			for (Integer id : systems.getActiveSystems()) {
 				if (systems.getEntity(systems.integerIdLookup(id)).type.equals("Teleportation")) {
 					TextButton button = new TextButton(systems.getEntity(systems.integerIdLookup(id)).id.toString(), game.skin);
@@ -133,10 +143,10 @@ public class Auber extends Entity {
 							System.out.println("Teleported to: " + position);
 						}
 					});
+					//button.draw();
 					table.add(button).space(16).row();
 				}
 			}
-			stage.draw();
 			System.out.println("Teleporting");
 			this.teleportCoolDown = 5.0f;
 		}
