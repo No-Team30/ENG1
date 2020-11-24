@@ -12,6 +12,7 @@ public class ID {
     private static int idCount = 1;
     /**
      * The unique ID of the entity
+     * Have to use this in hashmaps, due to Java hashing being different from even if the class data is the same
      */
     public final int ID;
     /**

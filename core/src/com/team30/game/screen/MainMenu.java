@@ -39,6 +39,7 @@ public class MainMenu extends ScreenAdapter {
                 dispose();
             }
         });
+
         TextButton startRecording = new TextButton("Start (Recording)", game.skin);
         startRecording.addListener(new ChangeListener() {
             @Override
@@ -48,6 +49,7 @@ public class MainMenu extends ScreenAdapter {
                 dispose();
             }
         });
+
         TextButton playback = new TextButton("Playback Recording", game.skin);
         playback.addListener(new ChangeListener() {
             @Override
@@ -57,6 +59,7 @@ public class MainMenu extends ScreenAdapter {
                 dispose();
             }
         });
+
         TextButton quit = new TextButton("Quit", game.skin);
         quit.addListener(new ChangeListener() {
             @Override
@@ -65,6 +68,7 @@ public class MainMenu extends ScreenAdapter {
                 Gdx.app.exit();
             }
         });
+
         table.add(start).space(16).row();
         table.add(startRecording).space(16).row();
         table.add(playback).space(16).row();

@@ -73,12 +73,25 @@ public class SystemContainer implements EntityContainer {
             int y_pos = ((int) (float) yPosObject) / GameScreen.TILE_SIZE;
             int width = ((int) (float) widthObject) / GameScreen.TILE_SIZE;
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
-            StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, 100);
+
+            StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, StationSystem.DEFAULT_HEALTH);
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);
         }
 
+        // Assign teleportation pairs
+        // TODO Eventually allow for user selection
+        ArrayList<Integer> teleporters = new ArrayList<>();
+        for (Map.Entry<Integer, StationSystem> entry : systems.entrySet()) {
+            if (entry.getValue().type.equals("Teleportation")) {
+                teleporters.add(entry.getValue().id.ID);
+            }
+        }
+        systems.get(teleporters.get(0)).pair = teleporters.get(2);
+        systems.get(teleporters.get(2)).pair = teleporters.get(0);
+        systems.get(teleporters.get(1)).pair = teleporters.get(3);
+        systems.get(teleporters.get(3)).pair = teleporters.get(1);
     }
 
     public ID integerIdLookup(Integer id) {
@@ -86,7 +99,7 @@ public class SystemContainer implements EntityContainer {
     }
 
     @Override
-    public Entity getEntity(ID id) {
+    public StationSystem getEntity(ID id) {
         return systems.get(id.ID);
     }
 

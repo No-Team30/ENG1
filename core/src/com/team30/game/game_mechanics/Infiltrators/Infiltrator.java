@@ -39,7 +39,7 @@ public class Infiltrator extends Entity {
     }
 
     /**
-     * Spawns a new NPC with the given ID, and at the given position
+     * Spawns a new Infiltrator with the given ID, and at the given position
      *
      * @param id        The ID of the NPC
      * @param xPosition The x coordinate to spawn on
@@ -49,7 +49,7 @@ public class Infiltrator extends Entity {
         super(id, new Texture(("Infiltrator.png")), xPosition, yPosition, 1, 1);
         this.targetSystem = null;
         moves = new LinkedList<>();
-        System.out.println("Spawned npc:" + this.id + " at: " + this.position.toString());
+        System.out.println("Spawned infiltrator:" + this.id + " at: " + this.position.toString());
     }
 
 

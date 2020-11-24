@@ -84,6 +84,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         // Create all entities
         auber = new Auber(roomTiles);
         npcs = new NpcContainer();
+
         systemContainer = new SystemContainer(systemsMap);
         infiltrators = new InfiltratorContainer(systemContainer);
 
@@ -162,7 +163,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
             infiltrators.checkCaptured(auber);
         }
         auber.updatePosition(delta, roomTiles);
+        // Check if an infiltrator is applying a hallucination
         auber.checkHallucinations(roomTiles, infiltrators);
+
+        // Check if auber is on teleporter
+        auber.updateTeleportCoolDown(delta);
+        auber.teleport(systemContainer);
+
         infiltrators.updateMovements(delta, roomTiles);
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
@@ -181,7 +188,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         infiltrators.draw(batch);
         npcs.draw(batch);
-        if (systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()) {
+
+        //TODO balance heal and damage rates
+        //Updates the aubers health (both damage and healing)
+        auber.healFromSystem(systemContainer, 1);
+        if (auber.damageFromSystem(systemContainer, 0.5f) || systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()) {
             System.out.println("Game ends");
             game.pause();
             game.setScreen(new MainMenu(game));
