@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class NpcContainer implements EntityContainer {
     private static final int NPC_AMOUNT = 5;
-    private final HashMap<Integer, NPC> npcs;
+    private final HashMap<Integer, Npc> npcs;
     private ArrayList<Action> recordedActions;
 
     public NpcContainer() {
@@ -34,7 +34,7 @@ public class NpcContainer implements EntityContainer {
         for (int index = 0; index < NPC_AMOUNT; index++) {
             Npc npc = new Npc(room);
             npcs.put(npc.id.ID, npc);
-            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
+            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
         }
     }
 
