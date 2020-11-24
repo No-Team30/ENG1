@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Handles all concurrent npcs, and rendering of them
  */
 public class NpcContainer implements EntityContainer {
-    private static final int NPC_AMOUNT = 5;
+    private static final int NPC_AMOUNT = 20;
     private final HashMap<Integer, Npc> npcs;
     private ArrayList<Action> recordedActions;
     private final float timeSinceMove;
