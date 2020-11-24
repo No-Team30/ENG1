@@ -30,7 +30,7 @@ public class Infiltrator extends Entity {
      *
      * @param roomTiles The map of valid tiles
      */
-    public Infiltrator(TiledMapTileLayer roomTiles, String name) {
+    public Infiltrator(TiledMapTileLayer roomTiles) {
         super(new ID(EntityType.Infiltrator), new Texture(("Infiltrator.png")), roomTiles, 1, 1);
         this.targetSystem = null;
         this.infiltratorType = InfiltratorType.Normal;

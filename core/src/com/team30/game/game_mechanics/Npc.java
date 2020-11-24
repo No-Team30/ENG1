@@ -30,10 +30,12 @@ public class Npc extends Entity {
 
     /**
      * Sets the velocity for the npc in a random direction
+     *
+     * @param roomTiles The map of valid tiles
      */
-    public void calculateNewVelocity(TiledMapTileLayer room) {
+    public void calculateNewVelocity(TiledMapTileLayer roomTiles) {
         Node node = new Node(position);
-        List<Node.Movements> possilbeMoves = node.getValidMoves(room);
+        List<Node.Movements> possilbeMoves = node.getValidMoves(roomTiles);
         Random random = new Random();
         this.velocity = Node.getMovement(possilbeMoves.get(random.nextInt(possilbeMoves.size())));
 /*        Random rand = new Random();

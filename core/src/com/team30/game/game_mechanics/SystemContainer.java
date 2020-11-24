@@ -133,7 +133,7 @@ public class SystemContainer implements EntityContainer {
     }
 
     /**
-     * @return Gets the amount of systems with health > 0
+     * @return Gets the amount of systems with health greater than 0
      */
     public int getAmountOfActiveSystems() {
         return activeSystems.size();

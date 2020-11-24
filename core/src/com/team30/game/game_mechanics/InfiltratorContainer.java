@@ -40,7 +40,7 @@ public class InfiltratorContainer implements EntityContainer {
     /**
      * Range in which the infiltrator will be captured by the auber
      */
-    private float captureRange = 0.1f;
+    private final float captureRange = 0.1f;
 
     /**
      * Stores all actions taken, in the current snapshot
@@ -173,13 +173,13 @@ public class InfiltratorContainer implements EntityContainer {
                     break;
                 case 2:
                     System.out.println("Spawning Fast infiltrator");
-                    newInfiltrator = new Infiltrator(roomTiles, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator = new Infiltrator(roomTiles);
                     newInfiltrator.infiltratorType = InfiltratorType.Fast;
                     newInfiltrator.MAX_VELOCITY *= 2;
                     newInfiltrator.VELOCITY_CHANGE *= 2;
                     break;
                 default:
-                    newInfiltrator = new Infiltrator(roomTiles, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator = new Infiltrator(roomTiles);
                     break;
             }
 
@@ -210,7 +210,7 @@ public class InfiltratorContainer implements EntityContainer {
                 // Need to check for null pointer exception
                 if (action.getInfiltratorType() == null) {
                     System.out.println("Null infiltrator type:" + action.toString());
-                    newInfiltrator = new Infiltrator(roomTiles, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator = new Infiltrator(roomTiles);
                 } else {
                     switch (action.getInfiltratorType()) {
                         case Fast:
