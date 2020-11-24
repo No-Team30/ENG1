@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 /**
  * Handles all concurrent npcs, and rendering of them
  */
-public class NPCContainer implements EntityContainer {
+public class NpcContainer implements EntityContainer {
     private static final int NPC_AMOUNT = 5;
     private final HashMap<Integer, NPC> npcs;
     private ArrayList<Action> recordedActions;
 
-    public NPCContainer() {
+    public NpcContainer() {
         npcs = new HashMap<>();
         recordedActions = new ArrayList<>();
     }
@@ -30,11 +30,11 @@ public class NPCContainer implements EntityContainer {
      *
      * @param room The map layer of valid room tiles
      */
-    public void spawnNPCs(TiledMapTileLayer room) {
+    public void spawnNpcs(TiledMapTileLayer room) {
         for (int index = 0; index < NPC_AMOUNT; index++) {
-            NPC npc = new NPC(room);
+            Npc npc = new Npc(room);
             npcs.put(npc.id.ID, npc);
-            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
+            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
         }
     }
 
@@ -62,7 +62,7 @@ public class NPCContainer implements EntityContainer {
      */
     @Override
     public void calculatePosition(float deltaTime, TiledMapTileLayer room) {
-        for (NPC npc : npcs.values()) {
+        for (Npc npc : npcs.values()) {
             npc.incrementTimeSinceLastUpdate(deltaTime);
             if (npc.getTimeSinceLastUpdate() > 0.1) {
                 npc.calculateNewVelocity(room);
@@ -75,7 +75,7 @@ public class NPCContainer implements EntityContainer {
 
     @Override
     public void updateMovements(float deltaTime, TiledMapTileLayer room) {
-        for (NPC npc : npcs.values()) {
+        for (Npc npc : npcs.values()) {
             npc.updatePosition(deltaTime, room);
         }
     }
@@ -86,7 +86,7 @@ public class NPCContainer implements EntityContainer {
      * @param batch Where to render the textures
      */
     public void draw(Batch batch) {
-        for (NPC npc : npcs.values()) {
+        for (Npc npc : npcs.values()) {
             npc.draw(batch);
         }
     }
@@ -105,8 +105,8 @@ public class NPCContainer implements EntityContainer {
                 applyMovementAction(action);
                 break;
             case Spawn:
-                NPC newNPC = new NPC(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
-                npcs.put(action.getId().ID, newNPC);
+                Npc newNpc = new Npc(action.getId(), (int) action.getXPosition(), (int) action.getYPosition());
+                npcs.put(action.getId().ID, newNpc);
                 break;
 
             default:
@@ -115,7 +115,7 @@ public class NPCContainer implements EntityContainer {
     }
 
     public void applyMovementAction(Action action) {
-        NPC npc =
+        Npc npc =
                 this.npcs.get(action.getId().ID);
         if (npc != null) {
             npc.applyMovementAction(action);
