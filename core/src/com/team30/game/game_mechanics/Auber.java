@@ -64,7 +64,6 @@ public class Auber extends Entity {
     }
 
     /**
-     * s
      * Heals the auber if they are close a healing system
      *
      * @param systems  SystemContainer of systems on the station
