@@ -28,18 +28,18 @@ public class RecordingContainer {
     /**
      * Loads an existing recording from the given file
      *
-     * @param filename
+     * @param filename The name of the file to load from
      */
     public RecordingContainer(String filename) {
         Gson gson = new Gson();
         try {
             RecordingContainer container = gson.fromJson(new FileReader(filename), RecordingContainer.class);
             this.recordings = container.recordings;
-            System.out.println(recordings);
             this.snapshotIndex = 0;
         } catch (FileNotFoundException e) {
             // TODO Proper error handling
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -59,8 +59,12 @@ public class RecordingContainer {
      */
     public LinkedList<Action> getSnapshot() {
         this.snapshotIndex += 1;
-        if (snapshotIndex < recordings.size()) {
-            return this.recordings.get(snapshotIndex);
+        if (snapshotIndex - 1 < recordings.size()) {
+            return this.recordings.get(snapshotIndex - 1);
+        }
+        // Loop back around
+        if (snapshotIndex == recordings.size()) {
+            snapshotIndex = 0;
         }
         return new LinkedList<>();
     }
@@ -90,8 +94,8 @@ public class RecordingContainer {
         Gson gson = new Gson();
         String json = null;
         try {
-            // TODO Change this name
-            FileWriter writer = new FileWriter("Test.json");
+            // TODO Change this name and maybe make it so we can have multiple recordings?
+            FileWriter writer = new FileWriter("Recording.json");
             gson.toJson(this, writer);
             writer.flush();
             writer.close();

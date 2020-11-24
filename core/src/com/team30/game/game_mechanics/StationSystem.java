@@ -2,15 +2,18 @@ package com.team30.game.game_mechanics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
-public class GameSystem extends Movement {
+public class StationSystem extends Entity {
     public final String name;
     public int health;
+    /**
+     * Whether the system has been destroyed
+     */
     public boolean active;
     private float coolDown;
 
 
-    public GameSystem(String name, int xPos, int yPos, int width, int height, int health) {
-        super(null, xPos, yPos, width, height);
+    public StationSystem(String name, int xPos, int yPos, int width, int height, int health) {
+        super(new ID(EntityType.StationSystem), null, xPos, yPos, width, height);
         this.name = name;
         this.MAX_VELOCITY = 0f;
         this.VELOCITY_CHANGE = 0f;
@@ -49,9 +52,14 @@ public class GameSystem extends Movement {
      * Removes the given amount of time from the cooldown
      *
      * @param delta The amount of time that has elapsed
+     * @return If the cooldown has expired
      */
-    public void updateCoolDown(float delta) {
+    public boolean updateCoolDown(float delta) {
+        if (this.coolDown == 0) {
+            return false;
+        }
         this.coolDown -= delta;
+        return this.coolDown == 0;
     }
 
     /**
