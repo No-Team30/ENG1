@@ -54,7 +54,6 @@ public class InfiltratorContainer implements EntityContainer {
         this.systemContainer = systemContainer;
     }
 
-    // TODO Why aren't these implemented?
     @Override
     public Entity getEntity(ID id) {
         return currentInfiltrators.get(id.ID);
@@ -70,10 +69,6 @@ public class InfiltratorContainer implements EntityContainer {
         return currentInfiltrators.values().stream().map(e -> (Entity) e).collect(Collectors.toList());
     }
 
-    //TODO Why is this here?
-    public Iterable<Infiltrator> getAllInfiltrators() {
-        return currentInfiltrators.values();
-    }
 
     /**
      * Checks whether to spawn a new infiltrator <br>
@@ -244,7 +239,6 @@ public class InfiltratorContainer implements EntityContainer {
             case Capture:
                 System.out.println("Capturing infiltrator with action: " + action.getId().ID);
                 currentInfiltrators.remove(action.getId().ID);
-                // TODO Waiting for capture logic
                 break;
             default:
                 break;

@@ -53,9 +53,9 @@ public class Auber extends Entity {
     public void checkHallucinations(TiledMapTileLayer room, InfiltratorContainer infiltrators) {
 
         //get Infiltrators around auber
-        for (Infiltrator infiltrator : infiltrators.getAllInfiltrators()) {
-            if (infiltrator instanceof Hallucinogenic && infiltrator.coolDown <= 0 && infiltrators.collisionCheck(this, infiltrator, 1)) {
-                getHallucinations(infiltrator);
+        for (Entity infiltrator : infiltrators.getAllEntities()) {
+            if (infiltrator instanceof Hallucinogenic && ((Hallucinogenic) infiltrator).coolDown <= 0 && infiltrators.collisionCheck(this, (Infiltrator) infiltrator, 1)) {
+                getHallucinations((Infiltrator) infiltrator);
             }
         }
     }

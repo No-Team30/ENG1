@@ -54,8 +54,7 @@ public class NpcContainer implements EntityContainer {
     }
 
     /**
-     * For pure random direction
-     * //TODO Can probably remove
+     * Applies a random movement to every npc, and records it
      *
      * @param deltaTime - The time elapsed since the velocity was last updated
      * @param room      The map layer of valid room tiles
@@ -67,7 +66,6 @@ public class NpcContainer implements EntityContainer {
             if (npc.getTimeSinceLastUpdate() > 0.1) {
                 npc.calculateNewVelocity(room);
                 recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
-
                 npc.resetTimeSinceLastUpdate();
             }
         }

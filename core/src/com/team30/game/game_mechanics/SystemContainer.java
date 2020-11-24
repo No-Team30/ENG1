@@ -107,7 +107,6 @@ public class SystemContainer implements EntityContainer {
     /**
      * @return The ArrayList of currently active systems
      */
-    // TODO? consider updating when systems are damaged
     public Set<Integer> getActiveSystems() {
         return activeSystems;
     }
@@ -116,7 +115,6 @@ public class SystemContainer implements EntityContainer {
     /**
      * @return The list of currently active systems that can aren't on cool down
      */
-    // TODO? consider updating when systems are damaged
     public Set<Integer> getAttackableSystems() {
         return attackableSystems;
     }

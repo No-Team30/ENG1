@@ -97,7 +97,7 @@ public class RecordingContainer {
         Gson gson = new Gson();
         String json = null;
         try {
-            // TODO Change this name and maybe make it so we can have multiple recordings?
+            // TODO Allow multiple recording files
             FileWriter writer = new FileWriter(RECORDING_FILE_NAME);
             gson.toJson(this, writer);
             writer.flush();
