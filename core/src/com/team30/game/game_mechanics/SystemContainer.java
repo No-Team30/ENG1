@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.team30.game.Recording.Action;
 import com.team30.game.Recording.ActionType;
+import com.team30.game.game_mechanics.Infiltrators.Infiltrator;
 import com.team30.game.screen.GameScreen;
 
 import java.util.*;
@@ -106,7 +107,6 @@ public class SystemContainer implements EntityContainer {
     /**
      * @return The ArrayList of currently active systems
      */
-    // TODO? consider updating when systems are damaged
     public Set<Integer> getActiveSystems() {
         return activeSystems;
     }
@@ -115,7 +115,6 @@ public class SystemContainer implements EntityContainer {
     /**
      * @return The list of currently active systems that can aren't on cool down
      */
-    // TODO? consider updating when systems are damaged
     public Set<Integer> getAttackableSystems() {
         return attackableSystems;
     }
@@ -181,7 +180,7 @@ public class SystemContainer implements EntityContainer {
     }
 
     @Override
-    public void applyAction(Action action) {
+    public void applyAction(Action action, TiledMapTileLayer room) {
         if (action.getActionType() == ActionType.Damage) {
             applyDamage(action.getId(), action.getTarget(), Infiltrator.DAMAGE_DEALT);
         }

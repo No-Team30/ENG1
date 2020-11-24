@@ -48,7 +48,7 @@ public class Entity {
     /**
      * The texture used to render the entity
      */
-    private TextureRegion region;
+    protected TextureRegion region;
 
     /**
      * Creates a new entity at a random position
@@ -81,7 +81,7 @@ public class Entity {
      * @param width     The width of the entity
      * @param height    The height of the entity
      */
-    public Entity(ID id, Texture texture, int xPosition, int yPosition, int width, int height) {
+    public Entity(ID id, Texture texture, float xPosition, float yPosition, int width, int height) {
         this.id = id;
         if (texture != null) {
             this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
@@ -120,6 +120,8 @@ public class Entity {
     public void draw(Batch batch) {
         batch.draw(region, getXPosition(), getYPosition(), width / 2f, height / 2f, width, height, 1f, 1f, velocity.angle() + 90);
     }
+
+
 
     /**
      * Attempts to move to a new cell (from the current velocity), if all corners are inside room tiles

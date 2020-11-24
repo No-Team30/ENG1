@@ -82,12 +82,11 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         camera.update();
 
         // Create all entities
-        // TODO Think of a better way of assigning
         auber = new Auber(roomTiles);
         npcs = new NpcContainer();
-
         systemContainer = new SystemContainer(systemsMap);
         infiltrators = new InfiltratorContainer(systemContainer);
+
         Gdx.input.setInputProcessor(this);
     }
 
@@ -144,13 +143,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
                         auber.applyMovementAction(action);
                         break;
                     case Infiltrator:
-                        infiltrators.applyAction(action);
+                        infiltrators.applyAction(action, roomTiles);
                         break;
                     case Npc:
-                        npcs.applyAction(action);
+                        npcs.applyAction(action, roomTiles);
                         break;
                     case StationSystem:
-                        systemContainer.applyAction(action);
+                        systemContainer.applyAction(action, roomTiles);
                         break;
                 }
             }
@@ -160,13 +159,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         if (!isPlayback) {
             infiltrators.calculatePosition(delta, roomTiles);
             npcs.calculatePosition(delta, roomTiles);
+            infiltrators.checkCaptured(auber);
         }
         auber.updatePosition(delta, roomTiles);
+        auber.checkHallucinations(roomTiles, infiltrators);
         infiltrators.updateMovements(delta, roomTiles);
         npcs.updateMovements(delta, roomTiles);
         systemContainer.updateMovements(delta, roomTiles);
 
-        infiltrators.checkCaptured(auber);
+
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
         camera.position.y = auber.getYPosition();
@@ -180,7 +181,7 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.draw(batch);
         infiltrators.draw(batch);
         npcs.draw(batch);
-        if (systemContainer.getAmountOfActiveSystems() < 1) {
+        if (systemContainer.getAmountOfActiveSystems() < 1 || infiltrators.hasPlayerWon()) {
             System.out.println("Game ends");
             game.pause();
             game.setScreen(new MainMenu(game));
@@ -189,16 +190,15 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         batch.end();
 
         // Records any movements made
-        if (shouldRecord & timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
+        if (shouldRecord && timeSinceLastSnapshot > SNAPSHOT_INTERVAL) {
             recording.newSnapshot();
-            recording.addAction(new Action(auber.id, ActionType.Move, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity(), null));
-            recording.addAllAction(npcs.record());
-            recording.addAllAction(infiltrators.record());
-            recording.addAllAction(systemContainer.record());
+            recording.addAction(new Action(auber.id, ActionType.Move, auber.getXPosition(), auber.getYPosition(), auber.getXVelocity(), auber.getYVelocity()));
+            recording.addAllActions(npcs.record());
+            recording.addAllActions(infiltrators.record());
+            recording.addAllActions(systemContainer.record());
             timeSinceLastSnapshot = 0;
         }
     }
-
 
     /**
      * Key not being pressed, so set velocity to zero

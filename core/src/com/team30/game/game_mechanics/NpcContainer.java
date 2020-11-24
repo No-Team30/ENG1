@@ -16,16 +16,13 @@ import java.util.stream.Collectors;
  * Handles all concurrent npcs, and rendering of them
  */
 public class NpcContainer implements EntityContainer {
-    private static final int NPC_AMOUNT = 20;
+    private static final int NPC_AMOUNT = 5;
     private final HashMap<Integer, Npc> npcs;
     private ArrayList<Action> recordedActions;
-    private final float timeSinceMove;
 
     public NpcContainer() {
         npcs = new HashMap<>();
-        recordedActions = new ArrayList<Action>();
-        timeSinceMove = 0f;
-
+        recordedActions = new ArrayList<>();
     }
 
     /**
@@ -37,14 +34,13 @@ public class NpcContainer implements EntityContainer {
         for (int index = 0; index < NPC_AMOUNT; index++) {
             Npc npc = new Npc(room);
             npcs.put(npc.id.ID, npc);
-            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
-
+            recordedActions.add(new Action(npc.id, ActionType.Spawn, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
         }
     }
 
     @Override
     public Entity getEntity(ID id) {
-        return npcs.get(id);
+        return npcs.get(id.ID);
     }
 
     @Override
@@ -58,11 +54,10 @@ public class NpcContainer implements EntityContainer {
     }
 
     /**
-     * For pure random direction
-     * //TODO Can probably remove
+     * Applies a random movement to every npc, and records it
      *
-     * @param deltaTime
-     * @param room
+     * @param deltaTime - The time elapsed since the velocity was last updated
+     * @param room      The map layer of valid room tiles
      */
     @Override
     public void calculatePosition(float deltaTime, TiledMapTileLayer room) {
@@ -70,8 +65,7 @@ public class NpcContainer implements EntityContainer {
             npc.incrementTimeSinceLastUpdate(deltaTime);
             if (npc.getTimeSinceLastUpdate() > 0.1) {
                 npc.calculateNewVelocity(room);
-                recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity(), null));
-
+                recordedActions.add(new Action(npc.id, ActionType.Move, npc.getXPosition(), npc.getYPosition(), npc.getXVelocity(), npc.getYVelocity()));
                 npc.resetTimeSinceLastUpdate();
             }
         }
@@ -103,7 +97,7 @@ public class NpcContainer implements EntityContainer {
     }
 
     @Override
-    public void applyAction(Action action) {
+    public void applyAction(Action action, TiledMapTileLayer room) {
         switch (action.getActionType()) {
             case Move:
                 applyMovementAction(action);

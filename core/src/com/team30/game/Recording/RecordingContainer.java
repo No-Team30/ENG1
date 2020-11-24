@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.team30.game.GameContainer.RECORDING_FILE_NAME;
+
 /**
  * Stores all game "snapshot" for playback
  * Each snapshot is stored as a list of actions that are executed in that interval
@@ -64,6 +66,7 @@ public class RecordingContainer {
         }
         // Loop back around
         if (snapshotIndex == recordings.size()) {
+            System.out.println("Restarting playback");
             snapshotIndex = 0;
         }
         return new LinkedList<>();
@@ -83,7 +86,7 @@ public class RecordingContainer {
      *
      * @param action The action to save
      */
-    public void addAllAction(List<Action> action) {
+    public void addAllActions(List<Action> action) {
         this.recordings.get(snapshotIndex).addAll(action);
     }
 
@@ -94,8 +97,8 @@ public class RecordingContainer {
         Gson gson = new Gson();
         String json = null;
         try {
-            // TODO Change this name and maybe make it so we can have multiple recordings?
-            FileWriter writer = new FileWriter("Recording.json");
+            // TODO Allow multiple recording files
+            FileWriter writer = new FileWriter(RECORDING_FILE_NAME);
             gson.toJson(this, writer);
             writer.flush();
             writer.close();
