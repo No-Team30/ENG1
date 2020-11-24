@@ -3,6 +3,14 @@ package com.team30.game.game_mechanics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.team30.game.GameContainer;
+
+import java.util.ArrayList;
 
 public class Auber extends Entity {
     /**
@@ -108,14 +116,29 @@ public class Auber extends Entity {
 	 *
 	 * @param systems	SystemContainer of systems on the station
 	 */
-	public void teleport(SystemContainer systems) {
+	public void teleport(final GameContainer game, SystemContainer systems) {
 		ID closest = getClosestSystem(position, systems);
-		StationSystem system = systems.getEntity(closest);
-		if (system.type.equals("Teleportation") && position.dst(system.position) < 1.0f && teleportCoolDown <= 0.0)
-		{
+		StationSystem teleporter = systems.getEntity(closest);
+		Stage stage = new Stage();
+		if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < 1.0f && teleportCoolDown <= 0.0) {
+			Table table = new Table();
+			stage.addActor(table);
+			for (Integer id : systems.getActiveSystems()) {
+				if (systems.getEntity(systems.integerIdLookup(id)).type.equals("Teleportation")) {
+					TextButton button = new TextButton(systems.getEntity(systems.integerIdLookup(id)).id.toString(), game.skin);
+					button.addListener(new ChangeListener() {
+						@Override
+						public void changed(ChangeEvent event, Actor actor) {
+							position = systems.getEntity(systems.integerIdLookup(id)).position;
+							System.out.println("Teleported to: " + position);
+						}
+					});
+					table.add(button).space(16).row();
+				}
+			}
+			stage.draw();
 			System.out.println("Teleporting");
-
+			this.teleportCoolDown = 5.0f;
 		}
-		this.teleportCoolDown = 5.0f;
 	}
 }

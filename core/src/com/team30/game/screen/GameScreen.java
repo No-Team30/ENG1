@@ -173,9 +173,10 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         auber.damageFromSystem(systemContainer, 0.5f);
 
         //check if auber is on teleporter
-        auber.updateTeleportCoolDown(delta);
-        auber.teleport(systemContainer);
+        auber.updateTeleportCoolDown( delta);
+        auber.teleport(game, systemContainer);
         infiltrators.checkCaptured(auber);
+
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
         camera.position.y = auber.getYPosition();
