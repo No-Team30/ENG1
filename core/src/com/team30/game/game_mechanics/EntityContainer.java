@@ -64,5 +64,5 @@ public interface EntityContainer {
      *
      * @param action The action to apply
      */
-    void applyAction(Action action);
+    void applyAction(Action action, TiledMapTileLayer room);
 }

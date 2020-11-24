@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.team30.game.GameContainer;
+import com.team30.game.game_mechanics.Infiltrators.Hallucinogenic;
+import com.team30.game.game_mechanics.Infiltrators.Infiltrator;
 
 public class Auber extends Entity {
     private final int maxHealth = 100;
@@ -21,6 +23,10 @@ public class Auber extends Entity {
     private int health;
     private float teleportCoolDown;
 
+    /**
+     * The time for hallucination
+     */
+    public float hallucinationTime;
     public Auber(TiledMapTileLayer roomTiles) {
         super(new ID(EntityType.Auber), new Texture("Auber.png"), roomTiles, 1, 1);
         this.VELOCITY_CHANGE = 2f;
@@ -115,10 +121,52 @@ public class Auber extends Entity {
     public void teleport(final GameContainer game, SystemContainer systems) {
         ID closest = getClosestSystem(position, systems);
         StationSystem teleporter = systems.getEntity(closest);
-        if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < 1.0f && teleportCoolDown <= 0.0) {
+        if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < teleportRange && teleportCoolDown <= 0.0) {
             this.position = systems.getEntityByInt(teleporter.pair).position.cpy();
             System.out.println("Teleporting");
             this.teleportCoolDown = 5.0f;
+        }
+    }
+
+    /**
+     * Attempts to move to a new cell (from the current velocity), if all corners are inside room tiles,when hallucinationTime is zero.
+     *
+     * @param deltaTime The time since last update
+     * @param room      The room layer for collision detection
+     */
+    @Override
+    public void updatePosition(float deltaTime, TiledMapTileLayer room) {
+        hallucinationTime -= deltaTime;
+        if (hallucinationTime > 0) {
+            setXVelocity(0);
+            setYVelocity(0);
+            return;
+        }
+        hallucinationTime = 0;
+        super.updatePosition(deltaTime, room);
+    }
+
+    /**
+     * Get Hallucinations ability
+     * if Auber is nearby and cooldown is over, infiltrator will use the ability
+     *
+     * @param infiltrator To create a infiltrator get coolDownTime
+     */
+    public void getHallucinations(Infiltrator infiltrator) {
+        hallucinationTime = 2;
+        infiltrator.coolDown = infiltrator.coolDownTime;
+    }
+
+    /**
+     * Check hallucinations
+     */
+    public void checkHallucinations(TiledMapTileLayer room, InfiltratorContainer infiltrators) {
+
+        //get Infiltrators around auber
+        for (Entity infiltrator : infiltrators.getAllEntities()) {
+            if (infiltrator instanceof Hallucinogenic && ((Hallucinogenic) infiltrator).coolDown <= 0 && infiltrators.collisionCheck(this, (Infiltrator) infiltrator, 1)) {
+                getHallucinations((Infiltrator) infiltrator);
+            }
         }
     }
 }

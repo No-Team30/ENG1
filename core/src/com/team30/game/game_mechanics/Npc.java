@@ -23,7 +23,6 @@ public class Npc extends Entity {
      * @param xPosition The x coordinate to spawn on
      * @param yPosition The y coordinate to spawn on
      */
-    // TODO Check for clashing ID'S?
     public Npc(ID id, int xPosition, int yPosition) {
         super(id, new Texture(("NPC.png")), xPosition, yPosition, 1, 1);
     }

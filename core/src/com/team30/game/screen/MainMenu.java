@@ -12,8 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.team30.game.GameContainer;
 import com.team30.game.Recording.RecordingContainer;
 
-import static com.team30.game.GameContainer.SCREEN_HEIGHT;
-import static com.team30.game.GameContainer.SCREEN_WIDTH;
+import static com.team30.game.GameContainer.*;
 
 public class MainMenu extends ScreenAdapter {
     private final GameContainer game;
@@ -56,7 +55,7 @@ public class MainMenu extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Playback Recording");
-                game.setScreen(new GameScreen(game, new RecordingContainer("Test.json")));
+                game.setScreen(new GameScreen(game, new RecordingContainer(RECORDING_FILE_NAME)));
                 dispose();
             }
         });
