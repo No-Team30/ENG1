@@ -74,13 +74,14 @@ public class SystemContainer implements EntityContainer {
             int width = ((int) (float) widthObject) / GameScreen.TILE_SIZE;
             int height = ((int) (float) heightObject) / GameScreen.TILE_SIZE;
 
-            StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, 100);
+            StationSystem system = new StationSystem(object.getName(), x_pos, y_pos, width, height, StationSystem.DEFAULT_HEALTH);
             this.systems.put(system.id.ID, system);
             this.activeSystems.add(system.id.ID);
             this.attackableSystems.add(system.id.ID);
-            //System.out.println(object.getName());
         }
 
+        // Assign teleportation pairs
+        // TODO Eventually allow for user selection
         ArrayList<Integer> teleporters = new ArrayList<>();
         for (Map.Entry<Integer, StationSystem> entry : systems.entrySet()) {
             if (entry.getValue().type.equals("Teleportation")) {

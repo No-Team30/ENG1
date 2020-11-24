@@ -64,7 +64,6 @@ public class Auber extends Entity {
     }
 
     /**
-     * s
      * Heals the auber if they are close a healing system
      *
      * @param systems  SystemContainer of systems on the station
@@ -93,7 +92,7 @@ public class Auber extends Entity {
         StationSystem system = systems.getEntity(closest);
         if (health > 0 && !(system.type.equals("Healing")) && position.dst(system.position) <= damageRange) {
             //TODO Balance this heuristic
-            health -= (int) damageRate * (systems.getEntity(closest).maxHealth - systems.getEntity(closest).getHealth());
+            health -= (int) damageRate * (systems.getEntity(closest).getMaxHealth() - systems.getEntity(closest).getHealth());
         }
         return health <= 0;
     }
