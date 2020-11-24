@@ -79,6 +79,17 @@ public class SystemContainer implements EntityContainer {
             this.attackableSystems.add(system.id.ID);
             //System.out.println(object.getName());
         }
+
+        ArrayList<Integer> teleporters = new ArrayList<>();
+        for (Map.Entry<Integer, StationSystem> entry : systems.entrySet()) {
+            if (entry.getValue().type.equals("Teleportation")) {
+                teleporters.add(entry.getValue().id.ID);
+            }
+        }
+        systems.get(teleporters.get(0)).pair = teleporters.get(2);
+        systems.get(teleporters.get(2)).pair = teleporters.get(0);
+        systems.get(teleporters.get(1)).pair = teleporters.get(3);
+        systems.get(teleporters.get(3)).pair = teleporters.get(1);
     }
 
     public ID integerIdLookup(Integer id) {

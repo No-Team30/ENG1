@@ -131,22 +131,7 @@ public class Auber extends Entity {
 		StationSystem teleporter = systems.getEntity(closest);
 		Stage stage = new Stage();
 		if (teleporter.type.equals("Teleportation") && position.dst(teleporter.position) < 1.0f && teleportCoolDown <= 0.0) {
-			Table table = new Table();
-			//stage.addActor(table);
-			for (Integer id : systems.getActiveSystems()) {
-				if (systems.getEntity(systems.integerIdLookup(id)).type.equals("Teleportation")) {
-					TextButton button = new TextButton(systems.getEntity(systems.integerIdLookup(id)).id.toString(), game.skin);
-					button.addListener(new ChangeListener() {
-						@Override
-						public void changed(ChangeEvent event, Actor actor) {
-							position = systems.getEntity(systems.integerIdLookup(id)).position;
-							System.out.println("Teleported to: " + position);
-						}
-					});
-					//button.draw();
-					table.add(button).space(16).row();
-				}
-			}
+			this.position = systems.getEntityByInt(teleporter.pair).position;
 			System.out.println("Teleporting");
 			this.teleportCoolDown = 5.0f;
 		}

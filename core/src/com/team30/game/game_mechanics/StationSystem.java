@@ -11,6 +11,7 @@ public class StationSystem extends Entity {
      */
     public boolean active;
     private float coolDown;
+    public Integer pair;
 
 
     public StationSystem(String name, int xPos, int yPos, int width, int height, int health) {
