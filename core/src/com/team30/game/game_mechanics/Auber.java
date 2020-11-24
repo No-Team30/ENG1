@@ -6,24 +6,27 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Auber extends Entity {
     /**
-    * The health of the Auber
+    * The current and maximum health of the Auber
      */
 	private int health;
-	private int maxHealth = 100;
+	private final int maxHealth = 100;
 
 	/**
 	 * Range which the Auber must be in to be:
 	 * 	healed by the health system
 	 * 	damaged by a broken system
 	 */
-	private float healthRange = 2.0f;
-	private float damageRange = 2.0f;
+	private final float healthRange = 2.0f;
+	private final float damageRange = 2.0f;
+	private final float teleportRange = 1.0f;
+	private float teleportCoolDown;
 
     public Auber(TiledMapTileLayer roomTiles) {
         super(new ID(EntityType.Auber), new Texture("Auber.png"), roomTiles, 1, 1);
         this.VELOCITY_CHANGE = 2f;
         this.MAX_VELOCITY *= 1.5;
         this.health = 100;
+		this.teleportCoolDown = 0.0f;
     }
 
 	public Auber(TiledMapTileLayer roomTiles, int health) {
@@ -31,6 +34,7 @@ public class Auber extends Entity {
 		this.VELOCITY_CHANGE = 2f;
 		this.MAX_VELOCITY *= 1.5;
 		this.health = health;
+		this.teleportCoolDown = 0.0f;
 	}
 
 	/**
@@ -54,16 +58,15 @@ public class Auber extends Entity {
 		return systems.integerIdLookup(closestSystem);
 	}
 
-	/**
+	/**s
 	 *	Heals the auber if they are close a healing system
 	 *
-	 * @param systems		Systems on the station
+	 * @param systems		SystemContainer of systems on the station
 	 * @param healRate		Health to be added to auber
 	 */
 	public void healFromSystem(SystemContainer systems, int healRate) {
 		ID closest = getClosestSystem(position, systems);
-		//health < maxHealth &&
-		if ( systems.getEntity(closest).type.equals("Healing") && position.dst(systems.getEntityPosition(closest)) <= healthRange) {
+		if (health < maxHealth && systems.getEntity(closest).type.equals("Healing") && position.dst(systems.getEntityPosition(closest)) <= healthRange) {
 			health += healRate;
 		}
 		if (health <= 0) {
@@ -74,14 +77,45 @@ public class Auber extends Entity {
 	/**
 	 *	Damages the auber if they are close to a broken system
 	 *
-	 * @param systems		Systems on the station
+	 * @param systems		SystemContainer of systems on the station
 	 * @param damageRate	The damage rate to be inflicted
 	 */
 	public void damageFromSystem(SystemContainer systems, float damageRate) {
 		ID closest = getClosestSystem(position, systems);
-		if (health > 0 && !(systems.getEntity(closest).type.equals("Healing")) && position.dst(systems.getEntityPosition(closest)) <= damageRange) {
+		StationSystem system = systems.getEntity(closest);
+		if (health > 0 && !(system.type.equals("Healing")) && position.dst(system.position) <= damageRange) {
 			//TODO Balance this heuristic
 			health -= (int) damageRate * (systems.getEntity(closest).maxHealth - systems.getEntity(closest).getHealth());
 		}
+	}
+
+	/**
+	 * Updates the auber's telepportation cooldown
+	 *
+	 * @param deltaTime	Time passed since last run
+	 */
+	public void updateTeleportCoolDown(float deltaTime) {
+		if (teleportCoolDown > 0.0) {
+			this.teleportCoolDown -= deltaTime;
+		}
+		if (teleportCoolDown < 0.0) {
+			this.teleportCoolDown = 0.0f;
+		}
+	}
+
+	/**
+	 * Checks if the auber can teleport and if so performs it and adds cooldown
+	 *
+	 * @param systems	SystemContainer of systems on the station
+	 */
+	public void teleport(SystemContainer systems) {
+		ID closest = getClosestSystem(position, systems);
+		StationSystem system = systems.getEntity(closest);
+		if (system.type.equals("Teleportation") && position.dst(system.position) < 1.0f && teleportCoolDown <= 0.0)
+		{
+			System.out.println("Teleporting");
+
+		}
+		this.teleportCoolDown = 5.0f;
 	}
 }

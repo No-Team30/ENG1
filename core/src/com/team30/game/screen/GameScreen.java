@@ -168,8 +168,13 @@ public class GameScreen extends ScreenAdapter implements InputProcessor {
         systemContainer.updateMovements(delta, roomTiles);
 
         //TODO balance heal and damage rates
+        //updates the aubers health (both damage and healing)
         auber.healFromSystem(systemContainer, 1);
         auber.damageFromSystem(systemContainer, 0.5f);
+
+        //check if auber is on teleporter
+        auber.updateTeleportCoolDown(delta);
+        auber.teleport(systemContainer);
         infiltrators.checkCaptured(auber);
         // Set the camera to focus on Auber
         camera.position.x = auber.getXPosition();
