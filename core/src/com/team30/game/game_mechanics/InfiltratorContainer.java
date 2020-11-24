@@ -165,11 +165,11 @@ public class InfiltratorContainer implements EntityContainer {
             switch (randomV) {
                 case 0:
                     System.out.println("Spawning invisible infiltrator");
-                    newInfiltrator = new Invisible(roomTiles, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator = new Invisible(roomTiles);
                     break;
                 case 1:
                     System.out.println("Spawning Hallucinogenic infiltrator");
-                    newInfiltrator = new Hallucinogenic(roomTiles, "inf_" + this.spawnedInfiltrators);
+                    newInfiltrator = new Hallucinogenic(roomTiles);
                     break;
                 case 2:
                     System.out.println("Spawning Fast infiltrator");

@@ -38,9 +38,6 @@ public class Npc extends Entity {
         List<Node.Movements> possilbeMoves = node.getValidMoves(roomTiles);
         Random random = new Random();
         this.velocity = Node.getMovement(possilbeMoves.get(random.nextInt(possilbeMoves.size())));
-/*        Random rand = new Random();
-        this.velocity.x += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);
-        this.velocity.y += (((float) rand.nextInt((int) (this.VELOCITY_CHANGE * 100))) / 100) - (this.VELOCITY_CHANGE / 2);*/
     }
 
 }

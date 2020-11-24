@@ -12,8 +12,8 @@ public class Invisible extends Infiltrator {
     private float invisibleTime = 3;
 
 
-    public Invisible(TiledMapTileLayer roomTiles, String name) {
-        super(roomTiles, name);
+    public Invisible(TiledMapTileLayer roomTiles) {
+        super(roomTiles);
         this.infiltratorType = InfiltratorType.Invisible;
         System.out.println("Spawning invisible infiltrator");
     }

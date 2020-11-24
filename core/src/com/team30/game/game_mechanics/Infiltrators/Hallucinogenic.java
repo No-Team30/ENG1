@@ -6,8 +6,8 @@ import com.team30.game.game_mechanics.ID;
 
 public class Hallucinogenic extends Infiltrator {
 
-    public Hallucinogenic(TiledMapTileLayer roomTiles, String name) {
-        super(roomTiles, name);
+    public Hallucinogenic(TiledMapTileLayer roomTiles) {
+        super(roomTiles);
         this.infiltratorType = InfiltratorType.Hallucinogenic;
         System.out.println("Spawning hallucinatory infiltrator");
     }
