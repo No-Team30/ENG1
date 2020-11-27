@@ -1,4 +1,6 @@
 # ENG1
+# NOTE THE JAR FILE IS OUT OF DATE AND DOES NOT INCLUDE TELEPORTATION, BUT IS IN THE BASE CODE 
+
 A Java game as described by ENG1 module CompSci York Uni.
 
 Skins sourced from: https://github.com/czyzby/gdx-skins
